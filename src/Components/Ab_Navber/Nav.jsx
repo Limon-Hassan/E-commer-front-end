@@ -1,5 +1,6 @@
 import React from 'react';
 import Container from '../../Container/Container';
+import Benner from '../Benner/Benner';
 
 const Nav = () => {
   return (
@@ -60,6 +61,7 @@ const Nav = () => {
           </div>
         </Container>
       </nav>
+      <Benner/>
     </>
   );
 };
