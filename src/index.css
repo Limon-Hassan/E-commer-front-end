@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.slick-dots {
+  bottom: 12px !important;
+}
+
+.slick-dots li button::before {
+  color: red !important;
+}
+
+

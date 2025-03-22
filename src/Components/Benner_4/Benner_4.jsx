@@ -56,7 +56,6 @@ const Benner_4 = () => {
           </div>
         </Container>
       </section>
-      <Footer />
     </>
   );
 };

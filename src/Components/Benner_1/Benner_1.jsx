@@ -1,6 +1,5 @@
 import React from 'react';
 import Container from '../../Container/Container';
-import Benner_2 from '../Benner_2/Benner_2';
 
 const Benner_1 = () => {
   return (
@@ -178,7 +177,6 @@ const Benner_1 = () => {
           </div>
         </Container>
       </section>
-      <Benner_2/>
     </>
   );
 };

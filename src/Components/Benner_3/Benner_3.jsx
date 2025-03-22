@@ -31,7 +31,6 @@ const Benner_3 = () => {
           </div>
         </Container>
       </section>
-      <Benner_4 />
     </>
   );
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import Container from '../../Container/Container';
-import Benner from '../Benner/Benner';
+import { Link } from 'react-router-dom';
 
 const Nav = () => {
   return (
@@ -13,36 +13,36 @@ const Nav = () => {
             </a>
             <ul className="flex">
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/"
                   class="relative text-[16px] font-Poppipns_FONT leading-6 font-medium ml-[48px] after:absolute after:bottom-[-5px] after:left-0 after:w-full after:h-0.5 after:bg-black after:scale-x-0 hover:after:scale-x-100 after:transition-transform"
                 >
                   Home
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/contact"
                   class="relative text-[16px] font-Poppipns_FONT leading-6 font-medium ml-[48px] after:absolute after:bottom-[-5px] after:left-0 after:w-full after:h-0.5 after:bg-black after:scale-x-0 hover:after:scale-x-100 after:transition-transform"
                 >
                   Contact
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/about"
                   class="relative text-[16px] font-Poppipns_FONT leading-6 font-medium ml-[48px] after:absolute after:bottom-[-5px] after:left-0 after:w-full after:h-0.5 after:bg-black after:scale-x-0 hover:after:scale-x-100 after:transition-transform"
                 >
                   About
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/sign up"
                   class="relative text-[16px] font-Poppipns_FONT leading-6 font-medium ml-[48px] after:absolute after:bottom-[-5px] after:left-0 after:w-full after:h-0.5 after:bg-black after:scale-x-0 hover:after:scale-x-100 after:transition-transform"
                 >
                   Sign Up
-                </a>
+                </Link>
               </li>
             </ul>
             <div className="w-[350px] h-[40px] relative">
@@ -61,7 +61,6 @@ const Nav = () => {
           </div>
         </Container>
       </nav>
-      <Benner/>
     </>
   );
 };
