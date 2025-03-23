@@ -1,12 +1,13 @@
 import React from 'react';
 import Container from '../../Container/Container';
+import { Link } from 'react-router-dom';
 
 const Benner_1 = () => {
   return (
     <>
       <section className="mt-[150px] mb-[80px]">
         <Container>
-          <div className='border-b border-[#000]/20'>
+          <div className="border-b border-[#000]/20">
             <div className="mb-[40px]">
               <div className="flex items-center space-x-2 ">
                 <span className="w-[20px] h-[40px] bg-red-500 rounded-md"></span>
@@ -169,10 +170,13 @@ const Benner_1 = () => {
                 </div>
               </div>
             </div>
-            <div className='text-center mt-[50px] mb-[60px]'>
-              <button className="text-[18px] font-Poppipns_FONT font-medium text-[#fff] bg-[#DB4444] leading-6 py-[16px] px-[48px] rounded-[4px]">
+            <div className="text-center mt-[50px] mb-[60px]">
+              <Link
+                to="/product"
+                className="text-[18px] font-Poppipns_FONT font-medium text-[#fff] bg-[#DB4444] leading-6 py-[16px] px-[48px] rounded-[4px]"
+              >
                 View All Products
-              </button>
+              </Link>
             </div>
           </div>
         </Container>

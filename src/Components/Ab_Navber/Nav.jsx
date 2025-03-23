@@ -8,9 +8,9 @@ const Nav = () => {
       <nav className="pt-[40px] pb-[20px] border-b border-[#000000]/20">
         <Container>
           <div className="flex justify-between items-center ">
-            <a href="#">
+            <Link to="/">
               <img src="/Logo.png" alt="Logo" />
-            </a>
+            </Link>
             <ul className="flex">
               <li>
                 <Link
