@@ -197,6 +197,8 @@ const Product = () => {
           <div className="text-center mt-[80px]">
             <Pagination></Pagination>
           </div>
+
+          
         </Container>
       </section>
     </>

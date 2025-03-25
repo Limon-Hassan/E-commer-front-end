@@ -7,7 +7,7 @@ const Cart = () => {
       <section class="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
         <Container>
           <div class="mx-auto w-full px-4 2xl:px-0">
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">
+            <h2 class="text-xl font-semibold font-Poppipns_FONT text-gray-900 dark:text-white sm:text-2xl">
               Shopping Cart
             </h2>
 

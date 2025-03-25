@@ -10,6 +10,8 @@ import Signin from './Pages/Signin';
 import Product from './Pages/Product';
 import Cart from './Pages/Cart';
 import CheckOut from './Pages/CheckOut';
+import Account from './Pages/Account';
+import ProductDetails from './Pages/ProductDetails';
 
 const App = () => {
   return (
@@ -22,6 +24,8 @@ const App = () => {
           <Route path="/product" element={<Product />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<CheckOut />} />
+          <Route path="/account" element={<Account />} />
+          <Route path="/productDetails" element={<ProductDetails />} />
           <Route path="/about" element={<About />} />
           <Route path="/sign up" element={<Signup />} />
           <Route path="/sign in" element={<Signin />} />

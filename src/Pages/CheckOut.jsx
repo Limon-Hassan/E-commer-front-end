@@ -7,7 +7,7 @@ const CheckOut = () => {
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [saveInfo, setSaveInfo] = useState(false);
   const handlePaymentChange = option => {
-    setSelectedPayment(option); // Selecting one will automatically uncheck the other
+    setSelectedPayment(option); 
   };
   return (
     <>
