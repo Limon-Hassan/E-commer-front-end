@@ -1,12 +1,99 @@
-import React from 'react';
+import React, {  useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser } from '../action/authAction';
+import bcrypt from 'bcryptjs';
 import Container from '../Container/Container';
-import { Link } from 'react-router-dom';
 
 const Signin = () => {
+  const storedHashedPassword = useSelector(state => state.auth.user?.password);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [loginInputs, setLoginInputs] = useState({
+    email: '',
+    password: '',
+  });
+
+  const [errors, setErrors] = useState({
+    email: '',
+    password: '',
+  });
+
+  const handleChange = e => {
+    setLoginInputs({
+      ...loginInputs,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    const form = e.target;
+    const emailInput = form.email;
+    const passwordInput = form.password;
+
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    emailInput.setCustomValidity('');
+    passwordInput.setCustomValidity('');
+
+    // Check if Redux has the stored password
+    if (!storedHashedPassword) {
+      alert('No stored password found. Please sign up first.');
+      return;
+    }
+
+    // Validate entered password with stored hashed password
+    const isMatch = await bcrypt.compare(
+      loginInputs.password,
+      storedHashedPassword
+    );
+
+    if (!isMatch) {
+      passwordInput.setCustomValidity('Incorrect password');
+      passwordInput.reportValidity();
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        'http://localhost:5990/api/v1/auth/login',
+        loginInputs
+      );
+
+      console.log('Response:', response.data);
+
+      if (
+        response.data.msg === 'User login successful' &&
+        response.data.token
+      ) {
+        localStorage.setItem('authToken', response.data.token);
+        dispatch(setUser(response.data.user, response.data.token));
+        navigate('/');
+      } else {
+        passwordInput.setCustomValidity('Incorrect password');
+        passwordInput.reportValidity();
+      }
+    } catch (error) {
+      console.error('Error logging in:', error);
+
+      if (error.response?.data?.msg) {
+        passwordInput.setCustomValidity(error.response.data.msg);
+        passwordInput.reportValidity();
+      } else {
+        alert('Login failed. Please check your credentials and try again.');
+      }
+    }
+  };
+
   return (
     <section className="flex items-center justify-center min-h-screen bg-gray-100">
       <Container>
-        <div className="bg-white p-8 rounded-lg shadow-lg max-w-4xl flex flex-col md:flex-row">
+        <div className="bg-white p-8 rounded-lg shadow-lg max-w-[1000px] gap-[40px] flex flex-col md:flex-row">
           <div className="md:w-1/2 bg-blue-50 flex items-center justify-center p-6">
             <img src="/bennerpage.png" alt="Shopping" className="w-full" />
           </div>
@@ -19,31 +106,51 @@ const Signin = () => {
               Enter your details below
             </p>
 
-            <form action="#" method="POST">
+            <form action="#" method="POST" onSubmit={handleSubmit}>
               <div className="relative w-[400px] mb-[30px]">
                 <input
                   type="email"
                   name="email"
                   id="email"
+                  value={loginInputs.email}
+                  onChange={handleChange}
                   className="peer border-b bg-transparent text-[16px] font-Poppipns_FONT font-normal outline-none px-4 py-3 w-full focus:border-primary transition-colors duration-300"
+                  required
                 />
-
-                <span className=" absolute top-3.5 left-5 peer-focus:-top-3 peer-focus:bg-white text-[16px] font-Poppipns_FONT font-normal peer-focus:left-2 peer-focus:scale-[0.9] peer-focus:text-primary text-[#777777] peer-focus:px-1 transition-all duration-300 ">
-                  Your name
+                <span
+                  className={`absolute left-5 ${
+                    loginInputs.email ? '-top-3 scale-90' : 'top-3.5'
+                  } peer-focus:-top-3 peer-focus:bg-white text-[16px] font-Poppipns_FONT font-normal peer-focus:left-2 peer-focus:scale-[0.9] peer-focus:text-primary text-[#777777] peer-focus:px-1 transition-all duration-300`}
+                >
+                  Your Email
                 </span>
+                {errors.email && (
+                  <p className="text-red-500 text-sm">{errors.email}</p>
+                )}
               </div>
+
               <div className="relative w-[400px] mb-[30px]">
                 <input
                   type="password"
                   name="password"
                   id="password"
+                  value={loginInputs.password}
+                  onChange={handleChange}
                   className="peer border-b bg-transparent text-[16px] font-Poppipns_FONT font-normal outline-none px-4 py-3 w-full focus:border-primary transition-colors duration-300"
+                  required
                 />
-
-                <span className=" absolute top-3.5 left-5 peer-focus:-top-3 peer-focus:bg-white text-[16px] font-Poppipns_FONT font-normal peer-focus:left-2 peer-focus:scale-[0.9] peer-focus:text-primary text-[#777777] peer-focus:px-1 transition-all duration-300 ">
+                <span
+                  className={`absolute left-5 ${
+                    loginInputs.password ? '-top-3 scale-90' : 'top-3.5'
+                  } peer-focus:-top-3 peer-focus:bg-white text-[16px] font-Poppipns_FONT font-normal peer-focus:left-2 peer-focus:scale-[0.9] peer-focus:text-primary text-[#777777] peer-focus:px-1 transition-all duration-300`}
+                >
                   Your Password
                 </span>
+                {errors.password && (
+                  <p className="text-red-500 text-sm">{errors.password}</p>
+                )}
               </div>
+
               <div className="flex justify-between items-center mb-4">
                 <label className="flex items-center text-gray-600 text-sm">
                   <input type="checkbox" className="mr-2" />
@@ -53,14 +160,20 @@ const Signin = () => {
                   Forgot Password?
                 </a>
               </div>
-              <button className="w-full bg-red-500 text-white py-3 rounded-lg hover:bg-red-600">
+
+              <button
+                type="submit"
+                className="w-full bg-red-500 text-white py-3 rounded-lg hover:bg-red-600"
+              >
                 Log In
               </button>
+
               <div className="flex items-center my-4">
                 <hr className="w-full border-gray-300" />
                 <span className="px-3 text-gray-400">or</span>
                 <hr className="w-full border-gray-300" />
               </div>
+
               <button className="w-full border text-[16px] font-Poppipns_FONT font-normal text-[#000000] py-3 flex items-center justify-center rounded-lg hover:bg-gray-100">
                 <img
                   src="/Group 1 copy.png"
@@ -73,7 +186,7 @@ const Signin = () => {
 
             <p className="text-gray-600 text-center mt-4">
               Don't have an account?
-              <Link to='/sign up' className="text-blue-500 hover:underline">
+              <Link to="/sign-up" className="text-blue-500 hover:underline">
                 Sign up
               </Link>
             </p>

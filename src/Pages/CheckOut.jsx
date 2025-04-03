@@ -2,12 +2,11 @@ import React from 'react';
 import Container from '../Container/Container';
 import Checkbox from './Checkbox';
 import { useState } from 'react';
-
 const CheckOut = () => {
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [saveInfo, setSaveInfo] = useState(false);
   const handlePaymentChange = option => {
-    setSelectedPayment(option); 
+    setSelectedPayment(option);
   };
   return (
     <>
@@ -34,7 +33,7 @@ const CheckOut = () => {
                   className="border-border border rounded-md outline-none px-4 text-[15px] font-Poppipns_FONT font-normal text-black/50  w-full mt-1 py-3 focus:border-primary transition-colors duration-300 bg-[#F5F5F5]"
                 />
               </div>
-              <div className="w-[470px] mb-[50px] h-[50px]">
+              {/* <div className="w-[470px] mb-[50px] h-[50px]">
                 <label
                   htmlFor="name"
                   className="text-[15px] font-Poppipns_FONT font-[400]"
@@ -49,7 +48,7 @@ const CheckOut = () => {
                   placeholder="Company Name"
                   className="border-border border rounded-md outline-none px-4 text-[15px] font-Poppipns_FONT font-normal text-black/50  w-full mt-1 py-3 focus:border-primary transition-colors duration-300 bg-[#F5F5F5]"
                 />
-              </div>
+              </div> */}
               <div className="w-[470px] mb-[50px] h-[50px]">
                 <label
                   htmlFor="name"

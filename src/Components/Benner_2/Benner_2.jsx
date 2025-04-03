@@ -21,7 +21,7 @@ const Benner_2 = () => {
     axios
       .get('http://localhost:5990/api/v1/category/getAllCategories')
       .then(response => {
-        console.log(response.data.data); // Debugging: Check data structure
+        // console.log(response.data.data); // Debugging: Check data structure
         setallCategoryis(response.data.data);
       })
       .catch(err => {
