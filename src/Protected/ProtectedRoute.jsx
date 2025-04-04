@@ -1,17 +1,37 @@
-import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
-import { useSelector } from 'react-redux'; 
+import React, { useEffect, useState } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const PrivateRoute = () => {
-  const token = useSelector(state => state.auth.token); 
+const axiosInstance = axios.create({
+  baseURL: 'http://localhost:5990',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  withCredentials: true,
+});
 
-  if (!token) {
-    // If no token, redirect to login page
-    return <Navigate to="/sign-in" />;
-  }
+const ProtectedRoute = () => {
+  const navigate = useNavigate();
+  let [isvaild, setIsvaild] = useState(false);
 
-  // If token exists, render the protected content
-  return <Outlet />;
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await axiosInstance
+          .get('http://localhost:5990/api/v1/auth/user')
+          .then(Response => {
+            if (Response.statusText === 'OK') setIsvaild(true);
+          })
+
+      } catch (error) {
+        console.log('error hoise :' + error);
+        navigate("/sign-in")
+      }
+    };
+    checkAuth();
+  }, []);
+
+  return isvaild ? <Outlet /> : <div>fuck</div>;
 };
 
-export default PrivateRoute;
+export default ProtectedRoute;

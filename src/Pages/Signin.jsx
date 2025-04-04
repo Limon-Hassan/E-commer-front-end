@@ -1,13 +1,18 @@
-import React, {  useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '../action/authAction';
-import bcrypt from 'bcryptjs';
 import Container from '../Container/Container';
+const axiosInstance = axios.create({
+  baseURL: 'http://localhost:5990',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  withCredentials: true,
+});
 
 const Signin = () => {
-  const storedHashedPassword = useSelector(state => state.auth.user?.password);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loginInputs, setLoginInputs] = useState({
@@ -41,51 +46,24 @@ const Signin = () => {
     emailInput.setCustomValidity('');
     passwordInput.setCustomValidity('');
 
-    // Check if Redux has the stored password
-    if (!storedHashedPassword) {
-      alert('No stored password found. Please sign up first.');
-      return;
-    }
-
-    // Validate entered password with stored hashed password
-    const isMatch = await bcrypt.compare(
-      loginInputs.password,
-      storedHashedPassword
-    );
-
-    if (!isMatch) {
-      passwordInput.setCustomValidity('Incorrect password');
-      passwordInput.reportValidity();
-      return;
-    }
-
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         'http://localhost:5990/api/v1/auth/login',
         loginInputs
       );
 
-      console.log('Response:', response.data);
-
-      if (
-        response.data.msg === 'User login successful' &&
-        response.data.token
-      ) {
-        localStorage.setItem('authToken', response.data.token);
-        dispatch(setUser(response.data.user, response.data.token));
-        navigate('/');
-      } else {
-        passwordInput.setCustomValidity('Incorrect password');
-        passwordInput.reportValidity();
-      }
+      dispatch(setUser(response.data.user, response.data.token));
+      navigate('/');
     } catch (error) {
-      console.error('Error logging in:', error);
+      console.error('Login failed:', error);
 
-      if (error.response?.data?.msg) {
-        passwordInput.setCustomValidity(error.response.data.msg);
+      if (error.response && error.response.status === 401) {
+        const backendMessage =
+          error.response.data?.msg || 'Unauthorized access';
+        passwordInput.setCustomValidity(backendMessage);
         passwordInput.reportValidity();
       } else {
-        alert('Login failed. Please check your credentials and try again.');
+        alert('Something went wrong. Please try again.');
       }
     }
   };

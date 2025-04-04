@@ -31,7 +31,7 @@ const Signup = () => {
         'http://localhost:5990/api/v1/auth/regisation',
         formData
       );
-
+      localStorage.setItem('authuser', JSON.stringify(response.data.user));
       dispatch(setUser(response.data.user));
 
       navigate('/otpsent');
