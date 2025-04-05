@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react';
 import Container from '../Container/Container';
 import axios from 'axios';
 import Pagination from './Pagination ';
+import { toast, ToastContainer } from 'react-toastify';
+import { addToCart } from '../slice/Cartslice';
+import { useDispatch } from 'react-redux';
 
 const Product = () => {
+  let dispatch = useDispatch();
   const [isproduct, setIsproducts] = useState([]);
-
   const getproductsis = () => {
     axios
       .get('http://localhost:5990/api/v1/products/getProducts')
@@ -22,23 +25,64 @@ const Product = () => {
     getproductsis();
   }, []);
 
-  const truncateDescription = description => {
-    if (!description) return ''; // Handle missing description
+  const handleClickSubmit = product => {
+    // Show success message with Toastify
+    toast.success('Product added to cart!', {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      draggable: true,
+      progress: undefined,
+    });
 
-    // Truncate based on word count
-    const words = description.split(' ');
-    if (words.length > 3) {
-      return words.slice(0, 8).join(' ') + '...'; // Truncate to 10 words and add "..."
+    // Get the current cart from localStorage
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Check if the product is already in the cart
+    const existingProductIndex = cart.findIndex(
+      item => item._id === product._id
+    );
+
+    if (existingProductIndex === -1) {
+      // Add to localStorage
+      cart.push({ ...product, quantity: 1 });
+      localStorage.setItem('cart', JSON.stringify(cart));
+
+      // Also update Redux
+      dispatch(
+        addToCart({
+          _id: product._id,
+          name: product.name,
+          price: product.price,
+          photo: product.photo[0],
+          quantity: 1,
+        })
+      );
+    } else {
+      // Even if product exists in localStorage, check if Redux has it
+      const reduxCart = store.getState().cart.cartItems; // or use useSelector if inside component
+      const isInRedux = reduxCart.find(item => item._id === product._id);
+
+      if (!isInRedux) {
+        dispatch(
+          addToCart({
+            _id: product._id,
+            name: product.name,
+            price: product.price,
+            photo: product.photo[0],
+            quantity: 1,
+          })
+        );
+      }
+
+      toast.info('Product is already in the cart', {
+        position: 'top-right',
+        autoClose: 3000,
+      });
     }
-
-    // Truncate based on character count
-    if (description.length > 150) {
-      return description.slice(0, 150) + '...'; // Truncate to 100 characters and add "..."
-    }
-
-    return description; // If no condition is met, return the original description
   };
-
+  // jodi aita thik hoi tahole next step jodi user cart nah kore tahole amra cart page jete dibo nah
   return (
     <>
       <section className="mt-[150px] mb-[80px]">
@@ -62,9 +106,13 @@ const Product = () => {
                       <i className="fa-regular fa-heart"></i>
                     </div>
 
-                    <button className="absolute bottom-0 left-0 w-full bg-black text-white py-2 text-[16px] leading-6 font-Poppipns_FONT font-medium transform translate-y-full opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                    <button
+                      onClick={() => handleClickSubmit(item)}
+                      className="absolute bottom-0 left-0 w-full bg-black text-white py-2 text-[16px] leading-6 font-Poppipns_FONT font-medium transform translate-y-full opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300"
+                    >
                       Add To Cart
                     </button>
+                    <ToastContainer />
                   </div>
 
                   <h3 className="text-[18px] text-left font-Poppipns_FONT font-medium leading-6 text-[#000000] mt-[16px] mb-[10px]">
@@ -81,9 +129,7 @@ const Product = () => {
                   </div>
                   <div className="text-left mb-[10px]">
                     <span className="text-[14px] font-Poppipns_FONT font-normal leading-6 text-[#000000]/50">
-                      {truncateDescription(
-                        item.description || 'No description available'
-                      )}
+                      {item.description}
                     </span>
                   </div>
                   <div className="flex gap-[10px]">

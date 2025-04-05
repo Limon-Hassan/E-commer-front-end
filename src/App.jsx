@@ -13,6 +13,8 @@ import ProductDetails from './Pages/ProductDetails';
 import Signup from './Pages/Signup';
 import Signin from './Pages/Signin';
 import ProtectedRoute from './Protected/ProtectedRoute';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   return (
@@ -38,6 +40,7 @@ const App = () => {
         </Routes>
         <Footer />
       </BrowserRouter>
+      <ToastContainer />
     </>
   );
 };

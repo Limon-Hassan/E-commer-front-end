@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Container from '../../Container/Container';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const Nav = () => {
+  const cartItems = useSelector(state => state.cart.cartItems);
+  const cartCount = cartItems.reduce(
+    (total, item) => total + (item.quantity || 1),
+    0
+  );
   return (
     <>
       <nav className="pt-[40px] pb-[20px] border-b border-[#000000]/20">
@@ -38,7 +44,7 @@ const Nav = () => {
               </li>
               <li>
                 <Link
-                  to="/sign up"
+                  to="/sign-up"
                   class="relative text-[16px] font-Poppipns_FONT leading-6 font-medium ml-[48px] after:absolute after:bottom-[-5px] after:left-0 after:w-full after:h-0.5 after:bg-black after:scale-x-0 hover:after:scale-x-100 after:transition-transform"
                 >
                   Sign Up
@@ -55,9 +61,16 @@ const Nav = () => {
                 <i class="fa-sharp fa-regular fa-magnifying-glass relative z-10"></i>
               </span>
             </div>
-            <span className="text-[24px] cursor-pointer">
-              <i class="fa-regular fa-cart-shopping"></i>
-            </span>
+            <div className="relative">
+              <Link to="/cart">
+                <i className="fa fa-shopping-cart text-2xl"></i>
+                {cartCount > 0 && (
+                  <span className="absolute top-[-10px] right-[-10px] bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
+            </div>
           </div>
         </Container>
       </nav>
