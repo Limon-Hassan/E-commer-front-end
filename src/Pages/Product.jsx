@@ -3,17 +3,13 @@ import Container from '../Container/Container';
 import axios from 'axios';
 import Pagination from './Pagination ';
 import { toast, ToastContainer } from 'react-toastify';
-import { addToCart } from '../slice/Cartslice';
-import { useDispatch } from 'react-redux';
 
 const Product = () => {
-  let dispatch = useDispatch();
   const [isproduct, setIsproducts] = useState([]);
   const getproductsis = () => {
     axios
       .get('http://localhost:5990/api/v1/products/getProducts')
       .then(response => {
-        console.log('Products Data:', response.data.data);
         setIsproducts(response.data.data);
       })
       .catch(err => {
@@ -25,61 +21,78 @@ const Product = () => {
     getproductsis();
   }, []);
 
-  const handleClickSubmit = product => {
-    // Show success message with Toastify
-    toast.success('Product added to cart!', {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      draggable: true,
-      progress: undefined,
-    });
+  const handleClickSubmit = async product => {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      toast.error('You must be logged in to add to cart!');
+      return;
+    }
 
-    // Get the current cart from localStorage
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    try {
+      const payload = {
+        user: userId,
+        product: product._id,
+        quantity: 1,
+      };
 
-    // Check if the product is already in the cart
-    const existingProductIndex = cart.findIndex(
-      item => item._id === product._id
-    );
+      await axios
+        .post('http://localhost:5990/api/v1/cart/addtocart', payload, {
+          withCredentials: true, // to send cookies
+        })
+        .then(Response => {
+          console.log(Response);
+        });
 
-    if (existingProductIndex === -1) {
-      // Add to localStorage
-      cart.push({ ...product, quantity: 1 });
-      localStorage.setItem('cart', JSON.stringify(cart));
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-      // Also update Redux
-      dispatch(
-        addToCart({
-          _id: product._id,
+      // Check if product already exists in the cart
+      const existingProductIndex = cart.findIndex(
+        item => item.Product_id === product._id
+      );
+
+      if (existingProductIndex === -1) {
+        // Add new product with quantity to localStorage
+        const newProduct = {
+          Product_id: product._id,
           name: product.name,
           price: product.price,
-          photo: product.photo[0],
-          quantity: 1,
-        })
-      );
-    } else {
-      // Even if product exists in localStorage, check if Redux has it
-      const reduxCart = store.getState().cart.cartItems; // or use useSelector if inside component
-      const isInRedux = reduxCart.find(item => item._id === product._id);
+          rating: product.rating || 0,
+          review: product.review || [],
+          photo: product.Photo,
+          brand: product.brand || '',
+          category: product.category || [],
+          description: product.description || '',
+          sold: product.sold || 0,
+          createdAt: product.createdAt || new Date(),
+          updatedAt: product.updatedAt || new Date(),
+          quantity: 1, // Include quantity in the product object directly
+        };
 
-      if (!isInRedux) {
-        dispatch(
-          addToCart({
-            _id: product._id,
-            name: product.name,
-            price: product.price,
-            photo: product.photo[0],
-            quantity: 1,
-          })
-        );
+        // Add the new product to the cart array
+        cart.push(newProduct);
+        localStorage.setItem('cart', JSON.stringify(cart));
+
+        toast.success('Product added to cart!', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
-
-      toast.info('Product is already in the cart', {
-        position: 'top-right',
-        autoClose: 3000,
-      });
+    } catch (error) {
+      console.error('Add to cart error:', error);
+      if (error.response && error.response.data) {
+        // Display the error message returned from backend (if any)
+        toast.error(error.response.data.msg || 'Something went wrong', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          draggable: true,
+        });
+      }
     }
   };
   // jodi aita thik hoi tahole next step jodi user cart nah kore tahole amra cart page jete dibo nah
@@ -163,3 +176,47 @@ const Product = () => {
 };
 
 export default Product;
+
+// Photo
+// :
+// ["http://localhost:5990/photo-1743535632614-610291111.jpg"]
+// brand
+// :
+// "Brand A"
+// category
+// :
+// [{_id: "67e32b030f7a8783357cd11d", name: "mobile ",…}]
+// createdAt
+// :
+// "2025-04-01T19:27:12.626Z"
+// description
+// :
+// "its a unbelievable products"
+// isTopProduct
+// :
+// false
+// name
+// :
+// "amon kisu ja akhono bazare ase nai"
+// price
+// :
+// 23000
+// quantity
+// :
+// 1
+// rating
+// :
+// 0
+// review
+// :
+// []
+// sold
+// :
+// 0
+// updatedAt
+// :
+// "2025-04-01T19:27:12.626Z"
+// __v
+// :
+// 0
+// Product_id:"67ec3e1035a632109ae2644d"

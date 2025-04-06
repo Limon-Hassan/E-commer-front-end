@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setUser } from '../action/authAction';
 import Container from '../Container/Container';
 const axiosInstance = axios.create({
@@ -51,8 +51,8 @@ const Signin = () => {
         'http://localhost:5990/api/v1/auth/login',
         loginInputs
       );
-
-      dispatch(setUser(response.data.user, response.data.token));
+      localStorage.setItem('userId', response.data.user._id);
+      dispatch(setUser({ user: response.data.user }));
       navigate('/');
     } catch (error) {
       console.error('Login failed:', error);

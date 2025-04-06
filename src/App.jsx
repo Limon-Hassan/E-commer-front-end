@@ -1,4 +1,3 @@
-import React from 'react';
 import Nav from './Components/Ab_Navber/Nav';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Footer from './Components/Fotter/Footer';
@@ -15,8 +14,8 @@ import Signin from './Pages/Signin';
 import ProtectedRoute from './Protected/ProtectedRoute';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 const App = () => {
+  
   return (
     <>
       <BrowserRouter>
