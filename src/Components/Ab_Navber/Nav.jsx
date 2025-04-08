@@ -4,11 +4,12 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 const Nav = () => {
+  const userId = localStorage.getItem('userId'); // Check if user is logged in
   const cartItems = useSelector(state => state.cart.cartItems);
-  const cartCount = cartItems.reduce(
-    (total, item) => total + (item.quantity || 1),
-    0
-  );
+
+  const cartCount = userId
+    ? cartItems.reduce((total, item) => total + (item.quantity || 1), 0)
+    : 0;
   return (
     <>
       <nav className="pt-[40px] pb-[20px] border-b border-[#000000]/20">
@@ -64,7 +65,7 @@ const Nav = () => {
             <div className="relative">
               <Link to="/cart">
                 <i className="fa fa-shopping-cart text-2xl"></i>
-                {cartCount > 0 && (
+                {userId && cartCount > 0 && (
                   <span className="absolute top-[-10px] right-[-10px] bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                     {cartCount}
                   </span>

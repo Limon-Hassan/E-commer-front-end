@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Container from '../Container/Container';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Pagination from './Pagination ';
 import { toast, ToastContainer } from 'react-toastify';
 
 const Product = () => {
+  const navigate = useNavigate();
   const [isproduct, setIsproducts] = useState([]);
   const getproductsis = () => {
     axios
@@ -37,7 +39,7 @@ const Product = () => {
 
       await axios
         .post('http://localhost:5990/api/v1/cart/addtocart', payload, {
-          withCredentials: true, // to send cookies
+          withCredentials: true,
         })
         .then(Response => {
           console.log(Response);
@@ -45,13 +47,11 @@ const Product = () => {
 
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-      // Check if product already exists in the cart
       const existingProductIndex = cart.findIndex(
         item => item.Product_id === product._id
       );
 
       if (existingProductIndex === -1) {
-        // Add new product with quantity to localStorage
         const newProduct = {
           Product_id: product._id,
           name: product.name,
@@ -65,10 +65,9 @@ const Product = () => {
           sold: product.sold || 0,
           createdAt: product.createdAt || new Date(),
           updatedAt: product.updatedAt || new Date(),
-          quantity: 1, // Include quantity in the product object directly
+          quantity: 1,
         };
 
-        // Add the new product to the cart array
         cart.push(newProduct);
         localStorage.setItem('cart', JSON.stringify(cart));
 
@@ -84,7 +83,6 @@ const Product = () => {
     } catch (error) {
       console.error('Add to cart error:', error);
       if (error.response && error.response.data) {
-        // Display the error message returned from backend (if any)
         toast.error(error.response.data.msg || 'Something went wrong', {
           position: 'top-right',
           autoClose: 3000,
@@ -95,7 +93,33 @@ const Product = () => {
       }
     }
   };
-  // jodi aita thik hoi tahole next step jodi user cart nah kore tahole amra cart page jete dibo nah
+
+  let handleItems = async id => {
+    try {
+      await axios
+        .get('http://localhost:5990/api/v1/products/getProducts', {
+          params: { id },
+        })
+        .then(response => {
+          const productData = response.data.data;
+          console.log(productData);
+
+          navigate(`/productDetails/${id}`, { state: productData });
+        });
+    } catch (error) {
+      console.log(error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.msg || 'Something went wrong', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          draggable: true,
+        });
+      }
+    }
+  };
+
   return (
     <>
       <section className="mt-[150px] mb-[80px]">
@@ -103,8 +127,12 @@ const Product = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[60px]">
             {isproduct.length > 0 ? (
               isproduct.map(item => (
-                <div key={item._id} className="text-center">
-                  <div className="w-[270px] h-[250px] bg-[#F5F5F5] items-center justify-center flex rounded-[4px] relative group overflow-hidden">
+                <div
+                  key={item._id}
+                  onClick={() => handleItems(item._id)}
+                  className="text-center"
+                >
+                  <div className="w-[270px] h-[250px] bg-[#F5F5F5] items-center justify-center flex rounded-[4px] relative group overflow-hidden cursor-pointer">
                     <div className="text-[12px] font-Poppipns_FONT bg-[#DB4444] py-[8px] px-[12px] font-medium text-[#FAFAFA] leading-[18px] rounded-[4px] absolute top-[12px] left-[12px]">
                       -40%
                     </div>

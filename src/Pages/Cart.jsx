@@ -5,11 +5,9 @@ import axios from 'axios';
 
 const Cart = () => {
   const [cartData, setCartData] = useState([]);
+  const userId = localStorage.getItem('userId');
 
   useEffect(() => {
-    const userId = localStorage.getItem('userId');
-    console.log('Fetched userId from localStorage:', userId); // 👀 LOG THIS
-
     if (!userId || userId === 'null') {
       console.warn('User ID not found in localStorage');
       toast.error('Please log in to view cart');
@@ -24,23 +22,18 @@ const Cart = () => {
         );
 
         if (response.status === 200) {
-          console.log('Full response:', response.data);
           setCartData(response.data);
-          // Assuming cartData is the response you're working with and contains a `quantity` field
-          const quantity = response.data[0]?.quantity || 'No quantity found';
-          console.log('Cart Item Quantity:', quantity);
         }
       } catch (error) {
-        console.error('Error fetching cart data', error);
-        toast.error('Failed to load cart data');
+        console.log('Error fetching cart data', error);
+        toast.error('Please add to cart first');
       }
     };
 
     fetchCartData();
-  }, []);
+  }, [userId]);
   const handleQuantityChange = async (cartId, action) => {
     let id = cartId;
-    console.log(id);
     try {
       const response = await axios.put(
         `http://localhost:5990/api/v1/cart/IncrementCart/${id}`,
@@ -51,10 +44,7 @@ const Cart = () => {
       );
       console.log(response.data);
       if (response.status === 200) {
-        const updatedCartItem = response.data.data; // Assuming response contains the updated cart item
-
-        console.log('Updated cart item:', updatedCartItem);
-
+        const updatedCartItem = response.data.data;
         setCartData(prevCart =>
           prevCart.map(item =>
             item._id === updatedCartItem._id
@@ -74,14 +64,36 @@ const Cart = () => {
         );
       }
     } catch (error) {
+      console.log(response.data.msg);
+      toast.error(error.response?.data?.msg || 'An error occurred');
+    }
+  };
+  const handleRemove = async item => {
+    let id = item._id;
+    try {
+      const response = await axios.delete(
+        `http://localhost:5990/api/v1/cart/DeleteCart/${id}`
+      );
+      console.log(response.data);
+
+      // ✅ Remove from localStorage
+      localStorage.removeItem('cart');
+
+      // ✅ Remove from state (if you're using useState for cartItems)
+      setCartData(prevItems =>
+        prevItems.filter(cartItem => cartItem._id !== id)
+      );
+
+      // ✅ Show success message
+      toast.success('Item removed from cart');
+    } catch (error) {
       console.error(
-        'Failed to update cart:',
+        'Failed to Delete cart:',
         error.response?.data || error.message
       );
       toast.error(error.response?.data?.msg || 'An error occurred');
     }
   };
-  const handleRemove = item => {};
   return (
     <>
       <section class="bg-white py-8 antialiased dark:bg-gray-900 md:py-16 mb-[200px]">
@@ -95,7 +107,7 @@ const Cart = () => {
                 <div class="  flex-none lg:w-full ">
                   {cartData.length > 0 ? (
                     cartData.map(item => (
-                      <div class="space-y-6">
+                      <div class="space-y-6 ">
                         <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6">
                           <div class="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
                             <a href="#" class="shrink-0 md:order-1">
@@ -109,92 +121,76 @@ const Cart = () => {
                             <label for="counter-input" class="sr-only">
                               Choose quantity:
                             </label>
-                            {cartData.map(item => (
-                              <div
-                                key={item._id}
-                                class="flex items-center justify-between md:order-3 md:justify-end"
-                              >
-                                <div class="flex items-center">
-                                  <button
-                                    type="button"
-                                    onClick={() =>
-                                      handleQuantityChange(
-                                        item._id,
-                                        'decrement'
-                                      )
-                                    }
-                                    disabled={
-                                      item.quantity && item.quantity <= 1
-                                    }
-                                    id="decrement-button"
-                                    data-input-counter-decrement="counter-input"
-                                    class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+                            <div class="flex items-center justify-between md:order-3 md:justify-end">
+                              <div class="flex items-center">
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleQuantityChange(item._id, 'decrement')
+                                  }
+                                  disabled={item.quantity && item.quantity <= 1}
+                                  id="decrement-button"
+                                  data-input-counter-decrement="counter-input"
+                                  class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+                                >
+                                  <svg
+                                    class="h-2.5 w-2.5 text-gray-900 dark:text-white"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 18 2"
                                   >
-                                    <svg
-                                      class="h-2.5 w-2.5 text-gray-900 dark:text-white"
-                                      aria-hidden="true"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      fill="none"
-                                      viewBox="0 0 18 2"
-                                    >
-                                      <path
-                                        stroke="currentColor"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M1 1h16"
-                                      />
-                                    </svg>
-                                  </button>
-                                  <input
-                                    type="text"
-                                    id="counter-input"
-                                    data-input-counter
-                                    class="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
-                                    placeholder=""
-                                    value={item.quantity}
-                                    required
-                                  />
-                                  <button
-                                    type="button"
-                                    onClick={() =>
-                                      handleQuantityChange(
-                                        item._id,
-                                        'increment'
-                                      )
-                                    }
-                                    disabled={
-                                      item.quantity >= item.product.stock
-                                    }
-                                    id="increment-button"
-                                    data-input-counter-increment="counter-input"
-                                    class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+                                    <path
+                                      stroke="currentColor"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M1 1h16"
+                                    />
+                                  </svg>
+                                </button>
+                                <input
+                                  type="text"
+                                  id="counter-input"
+                                  data-input-counter
+                                  class="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
+                                  placeholder=""
+                                  value={item.quantity}
+                                  required
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleQuantityChange(item._id, 'increment')
+                                  }
+                                  disabled={item.quantity >= item.product.stock}
+                                  id="increment-button"
+                                  data-input-counter-increment="counter-input"
+                                  class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+                                >
+                                  <svg
+                                    class="h-2.5 w-2.5 text-gray-900 dark:text-white"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 18 18"
                                   >
-                                    <svg
-                                      class="h-2.5 w-2.5 text-gray-900 dark:text-white"
-                                      aria-hidden="true"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      fill="none"
-                                      viewBox="0 0 18 18"
-                                    >
-                                      <path
-                                        stroke="currentColor"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M9 1v16M1 9h16"
-                                      />
-                                    </svg>
-                                  </button>
-                                </div>
-                                <div class="text-end md:order-4 md:w-32">
-                                  <p class="text-base font-bold text-gray-900 dark:text-white">
-                                    {item.product?.[0]?.price ||
-                                      'No price found'}
-                                  </p>
-                                </div>
+                                    <path
+                                      stroke="currentColor"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M9 1v16M1 9h16"
+                                    />
+                                  </svg>
+                                </button>
                               </div>
-                            ))}
+                              <div class="text-end md:order-4 md:w-32">
+                                <p class="text-base font-bold text-gray-900 dark:text-white">
+                                  {item.product?.[0]?.price || 'No price found'}
+                                </p>
+                              </div>
+                            </div>
 
                             <div class="w-full min-w-0 flex-1 space-y-4 md:order-2 md:max-w-md">
                               <a

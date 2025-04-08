@@ -24,7 +24,7 @@ const ProtectedRoute = () => {
           });
       } catch (error) {
         console.log('error hoise :' + error);
-        localStorage.removeItem('user');
+        localStorage.removeItem('userId');
         navigate('/sign-in');
       }
     };

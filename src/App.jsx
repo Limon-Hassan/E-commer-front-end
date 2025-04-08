@@ -15,7 +15,6 @@ import ProtectedRoute from './Protected/ProtectedRoute';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 const App = () => {
-  
   return (
     <>
       <BrowserRouter>
@@ -31,7 +30,7 @@ const App = () => {
             <Route path="/cart" element={<Cart />} />
           </Route>
 
-          <Route path="/productDetails" element={<ProductDetails />} />
+          <Route path="/productDetails/:id" element={<ProductDetails />} />
           <Route path="/otpsent" element={<Otp />} />
           <Route path="/sign-up" element={<Signup />} />
           <Route path="/sign-in" element={<Signin />} />

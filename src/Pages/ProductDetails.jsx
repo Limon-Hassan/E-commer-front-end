@@ -1,10 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Container from '../Container/Container';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { useLocation } from 'react-router-dom';
+import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
 
 const ProductDetails = () => {
+  const location = useLocation();
+  const [reviews, setReviews] = useState({});
+  const [rating, setRating] = useState(0);
+  const [hover, setHover] = useState(0);
+  const [comment, setComment] = useState('');
+  const userId = localStorage.getItem('userId');
+  const product = location.state;
   const settings = {
     dots: false,
     infinite: true,
@@ -12,7 +22,121 @@ const ProductDetails = () => {
     slidesToShow: 3,
     slidesToScroll: 3,
   };
+  const handleClickSubmit = async product => {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      toast.error('You must be logged in to add to cart!');
+      return;
+    }
 
+    try {
+      const payload = {
+        user: userId,
+        product: product._id,
+        quantity: 1,
+      };
+
+      await axios.post('http://localhost:5990/api/v1/cart/addtocart', payload, {
+        withCredentials: true,
+      });
+
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+      const existingProductIndex = cart.findIndex(
+        item => item.Product_id === product._id
+      );
+
+      if (existingProductIndex === -1) {
+        const newProduct = {
+          Product_id: product._id,
+          name: product.name,
+          price: product.price,
+          rating: product.rating || 0,
+          review: product.review || [],
+          photo: product.Photo,
+          brand: product.brand || '',
+          category: product.category || [],
+          description: product.description || '',
+          sold: product.sold || 0,
+          createdAt: product.createdAt || new Date(),
+          updatedAt: product.updatedAt || new Date(),
+          quantity: 1,
+        };
+
+        cart.push(newProduct);
+        localStorage.setItem('cart', JSON.stringify(cart));
+
+        toast.success('Product added to cart!', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    } catch (error) {
+      console.error('Add to cart error:', error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.msg || 'Something went wrong', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          draggable: true,
+        });
+      }
+    }
+  };
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    if (!rating || !comment) return alert('Please fill in all fields');
+
+    try {
+      const response = await axios.post(
+        `http://localhost:5990/api/v1/products/add-review`,
+        {
+          user: userId,
+          productId: product._id,
+          rating,
+          comment,
+        }
+      );
+
+      setRating(0);
+      setHover(0);
+      setComment('');
+
+      toast.success(response.data.message || 'Review submitted successfully!');
+    } catch (error) {
+      console.error(
+        'Failed to submit review:',
+        error.response?.data || error.message
+      );
+      toast.error(error.response?.data?.message || 'Failed to submit review');
+    }
+  };
+  let fetchReviews = async () => {
+    let productId = product._id;
+    try {
+      const response = await axios.get(
+        `http://localhost:5990/api/v1/products/getReviews`,
+        {
+          params: { productId },
+        }
+      );
+
+      if (response.status === 200) {
+        setReviews(response.data.reviews);
+      }
+    } catch (error) {
+      console.log('Error fetching cart data', error);
+    }
+  };
+  useEffect(() => {
+    fetchReviews();
+  }, []);
   return (
     <>
       <section className="mt-[180px] mb-[120px]">
@@ -20,127 +144,184 @@ const ProductDetails = () => {
           <h3 className="text-[25px] mt-[-100px] mb-[50px] font-Poppipns_FONT font-medium text-black leading-7">
             Product Details
           </h3>
-          <div className="w-full grid grid-cols-2">
-            <div className="flex items-center gap-[30px]">
-              <div className="flex flex-col gap-4">
-                <div className="w-[120px] h-[110px] rounded-lg bg-[#F5F5F5] p-4">
+          {product ? (
+            <div className="w-full flex justify-between ">
+              <div className="flex items-center gap-[30px]">
+                <div className="flex flex-col gap-4">
+                  <div className="w-[120px] h-[110px] rounded-lg bg-[#F5F5F5] p-4">
+                    <img
+                      src={product.Photo}
+                      alt={product.name}
+                      className="w-full h-full  rounded-lg"
+                    />
+                  </div>
+                  <div className="w-[120px] h-[110px] rounded-lg bg-[#F5F5F5] p-4">
+                    <img
+                      src={product.Photo}
+                      alt={product.name}
+                      className="w-full h-full  rounded-lg"
+                    />
+                  </div>
+                  <div className="w-[120px] h-[110px] rounded-lg bg-[#F5F5F5] p-4">
+                    <img
+                      src={product.Photo}
+                      alt={product.name}
+                      className="w-full h-full  rounded-lg"
+                    />
+                  </div>
+                  <div className="w-[120px] h-[110px] rounded-lg bg-[#F5F5F5] p-4">
+                    <img
+                      src={product.Photo}
+                      alt={product.name}
+                      className="w-full h-full  rounded-lg"
+                    />
+                  </div>
+                </div>
+                <div className=" w-[500px] h-[485px] bg-[#F5F5F5] rounded  flex justify-center items-center">
                   <img
-                    src="/image 57.png"
-                    alt="Thumb 1"
-                    className="w-full h-full  rounded-lg"
+                    src={product.Photo}
+                    alt={product.name}
+                    className="w-[400px] h-[385px] object-center"
                   />
                 </div>
-                <div className="w-[120px] h-[110px] rounded-lg bg-[#F5F5F5] p-4">
-                  <img
-                    src="/image 58.png"
-                    alt="Thumb 2"
-                    className="w-full h-full  rounded-lg"
-                  />
-                </div>
-                <div className="w-[120px] h-[110px] rounded-lg bg-[#F5F5F5] p-4">
-                  <img
-                    src="/image 61.png"
-                    alt="Thumb 3"
-                    className="w-full h-full  rounded-lg"
-                  />
-                </div>
-                <div className="w-[120px] h-[110px] rounded-lg bg-[#F5F5F5] p-4">
-                  <img
-                    src="/image 59.png"
-                    alt="Thumb 4"
-                    className="w-full h-full  rounded-lg"
-                  />
-                </div>
-              </div>
-              <div className=" w-[500px] h-[485px] bg-[#F5F5F5] rounded">
-                <img
-                  src="/image 63.png"
-                  alt="Main Product"
-                  className="w-full h-full py-[130px] px-[30px]"
-                />
-              </div>
-            </div>
-
-            <div className="ml-[150px]">
-              <div className="border-b-2 border-black/20">
-                <h2 className="text-2xl font-Inter_FONT mb-[16px] font-semibold">
-                  Havic HV G-92 Gamepad
-                </h2>
-                <div className="flex items-center mt-2 text-gray-600">
-                  ⭐⭐⭐⭐⭐ <span className="ml-2 text-sm">(150 Reviews)</span>
-                  <span className="ml-4 text-green-500">In Stock</span>
-                </div>
-                <p className="text-2xl font-Inter_FONT font-bold mt-[16px] mb-[24px]">
-                  $192.00
-                </p>
-                <p className="text-[14px] font-Poppipns_FONT font-normal text-[#000000] leading-5 w-[381px] mb-[24px]">
-                  PlayStation 5 Controller Skin High quality vinyl with air
-                  channel adhesive for easy bubble free install & mess free
-                  removal Pressure sensitive.
-                </p>
               </div>
 
-              <div className="mt-4 flex items-center">
-                <span className="font-medium">Colours:</span>
-                <button className="w-6 h-6 bg-red-500 rounded-full ml-[24px]"></button>
-                <button className="w-6 h-6 bg-gray-300 rounded-full ml-[8px]"></button>
-              </div>
+              <div className="ml-[150px]">
+                <div className="border-b-2 border-black/20">
+                  <h2 className="text-2xl font-Inter_FONT mb-[16px] font-semibold">
+                    {product.name}
+                  </h2>
+                  <div className="flex items-center mt-2 text-gray-600">
+                    ⭐⭐⭐⭐⭐{' '}
+                    <span className="ml-2 text-sm">({product.rating})</span>
+                    <span className="ml-4 text-green-500">In Stock</span>
+                  </div>
+                  <p className="text-2xl font-Inter_FONT font-bold mt-[16px] mb-[24px]">
+                    {product.price}
+                  </p>
+                  <p className="text-[14px] font-Poppipns_FONT font-normal text-[#000000] leading-5 w-[381px] mb-[24px]">
+                    {product.description}
+                  </p>
+                </div>
 
-              <div className="mt-4">
-                <span className="font-medium">Size:</span>
-                <div className="inline-flex ml-2 space-x-2">
-                  <button className="border px-3 py-1 rounded">XS</button>
-                  <button className="border px-3 py-1 rounded">S</button>
-                  <button className="border px-3 py-1 rounded bg-red-500 text-white">
-                    M
+                <div className="mt-4 flex items-center">
+                  <span className="font-medium">Colours:</span>
+                  <button className="w-6 h-6 bg-red-500 rounded-full ml-[24px]"></button>
+                  <button className="w-6 h-6 bg-gray-300 rounded-full ml-[8px]"></button>
+                </div>
+
+                <div className="mt-4 flex items-center">
+                  <button
+                    onClick={() => handleClickSubmit(product)}
+                    className="text-[20px]  bg-red-400 text-white  rounded py-2 px-8 hover:bg-red-600 ease-in-out duration-300"
+                  >
+                    Add to Cart
                   </button>
-                  <button className="border px-3 py-1 rounded">L</button>
-                  <button className="border px-3 py-1 rounded">XL</button>
+                  <ToastContainer />
+                  <button className="ml-4 text-[20px] bg-red-500 text-white px-6 py-2 rounded">
+                    Buy Now
+                  </button>
                 </div>
               </div>
-
-              <div className="mt-4 flex items-center">
-                <button className="text-[24px] border w-[40px] hover:bg-[#DB4444] hover:text-white ease-in-out duration-300">
-                  -
-                </button>
-                <span className="px-4">2</span>
-                <button className="text-[24px] border w-[40px] hover:bg-[#DB4444] hover:text-white ease-in-out duration-300">
-                  +
-                </button>
-                <button className="ml-4 bg-red-500 text-white px-6 py-2 rounded">
-                  Buy Now
-                </button>
-              </div>
             </div>
-          </div>
+          ) : (
+            <div className="w-full  text-center flex justify-center items-center font-Poppipns_FONT font-bold text-[30px]">
+              You have don't selected any product !
+            </div>
+          )}
 
           {/* Reviews and Comments Section */}
           <div className="mt-12">
             <div className="border-t-2 pt-4">
               <h3 className="text-xl font-semibold mb-4">Reviews</h3>
-              <div className="mb-6">
-                {/* Display Existing Reviews */}
-                <div className="flex gap-2 items-center mb-4">
-                  <span className="font-medium">⭐ 4.5 / 5</span>
-                  <span className="text-gray-500">(120 Reviews)</span>
-                </div>
-                <div className="bg-[#F5F5F5] p-4 rounded-md">
-                  <h4 className="text-lg font-semibold">John Doe</h4>
-                  <p className="text-gray-600">
-                    Great product, really comfortable to use!
-                  </p>
-                </div>
-                <div className="bg-[#F5F5F5] p-4 rounded-md mt-4">
-                  <h4 className="text-lg font-semibold">Jane Smith</h4>
-                  <p className="text-gray-600">
-                    Excellent quality, but the size is a bit large for my hands.
-                  </p>
-                </div>
+              <div className="flex gap-2 items-center mb-8">
+                <span className="font-medium">⭐⭐⭐⭐⭐ Total</span>
+                <span className="text-gray-500">({product.totalReviews})</span>
               </div>
+              {Array.isArray(reviews) &&
+                reviews.map(item => (
+                  <div className="mb-6">
+                    <div className="bg-[#F5F5F5] p-4 rounded-md">
+                      <h4 className="text-lg font-semibold">
+                        {item.user?.name}
+                      </h4>
+                      <p className="text-gray-600">{item.comment}</p>
+                    </div>
+                    {/* <div className="bg-[#F5F5F5] p-4 rounded-md mt-4">
+                      <h4 className="text-lg font-semibold">Jane Smith</h4>
+                      <p className="text-gray-600">
+                        Excellent quality, but the size is a bit large for my
+                        hands.
+                      </p>
+                    </div> */}
+                  </div>
+                ))}
 
               {/* Add a Review Form */}
-              <h3 className="text-xl font-semibold mb-4">Add Your Review</h3>
-              <form className="space-y-4">
+              <h3 className="text-xl font-semibold mb-4 mt-[35px]">
+                Add Your Review
+              </h3>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="flex items-center space-x-2">
+                  <span className="font-medium">Rating:</span>
+                  <div className="flex gap-1">
+                    {[...Array(5)].map((_, index) => {
+                      const starValue = index + 1;
+                      return (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => setRating(starValue)}
+                          onMouseEnter={() => setHover(starValue)}
+                          onMouseLeave={() => setHover(0)}
+                          className="text-2xl"
+                          aria-label={`Rate ${starValue} star`}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill={
+                              (hover || rating) >= starValue
+                                ? '#3B82F6'
+                                : 'none'
+                            }
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            className={`w-6 h-6 ${
+                              (hover || rating) >= starValue
+                                ? 'text-blue-500'
+                                : 'text-gray-400'
+                            }`}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l2.07 6.374h6.708c.969 0 1.371 1.24.588 1.81l-5.424 3.938 2.07 6.373c.3.922-.755 1.688-1.54 1.117L12 17.768l-5.423 3.938c-.784.571-1.838-.195-1.54-1.117l2.07-6.373-5.424-3.938c-.783-.57-.38-1.81.588-1.81h6.708l2.07-6.374z"
+                            />
+                          </svg>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <textarea
+                  className="w-full p-3 rounded-md border border-gray-300"
+                  rows="4"
+                  placeholder="Write your review here..."
+                  value={comment}
+                  onChange={e => setComment(e.target.value)}
+                />
+                <div className="flex justify-end">
+                  <button
+                    type="submit"
+                    className="mt-4 bg-red-600 hover:bg-red-500 text-white px-6 py-2 rounded"
+                  >
+                    Submit Review
+                  </button>
+                </div>
+              </form>
+              {/* <form className="space-y-4">
                 <div className="flex items-center space-x-2">
                   <span className="font-medium">Rating:</span>
                   <div className="flex gap-1">
@@ -190,7 +371,7 @@ const ProductDetails = () => {
                     Submit Review
                   </button>
                 </div>
-              </form>
+              </form> */}
             </div>
           </div>
 
