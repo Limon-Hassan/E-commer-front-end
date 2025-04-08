@@ -8,6 +8,7 @@ import { toast, ToastContainer } from 'react-toastify';
 const Product = () => {
   const navigate = useNavigate();
   const [isproduct, setIsproducts] = useState([]);
+
   const getproductsis = () => {
     axios
       .get('http://localhost:5990/api/v1/products/getProducts')
@@ -37,13 +38,9 @@ const Product = () => {
         quantity: 1,
       };
 
-      await axios
-        .post('http://localhost:5990/api/v1/cart/addtocart', payload, {
-          withCredentials: true,
-        })
-        .then(Response => {
-          console.log(Response);
-        });
+      await axios.post('http://localhost:5990/api/v1/cart/addtocart', payload, {
+        withCredentials: true,
+      });
 
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
@@ -102,7 +99,6 @@ const Product = () => {
         })
         .then(response => {
           const productData = response.data.data;
-          console.log(productData);
 
           navigate(`/productDetails/${id}`, { state: productData });
         });
@@ -204,47 +200,3 @@ const Product = () => {
 };
 
 export default Product;
-
-// Photo
-// :
-// ["http://localhost:5990/photo-1743535632614-610291111.jpg"]
-// brand
-// :
-// "Brand A"
-// category
-// :
-// [{_id: "67e32b030f7a8783357cd11d", name: "mobile ",…}]
-// createdAt
-// :
-// "2025-04-01T19:27:12.626Z"
-// description
-// :
-// "its a unbelievable products"
-// isTopProduct
-// :
-// false
-// name
-// :
-// "amon kisu ja akhono bazare ase nai"
-// price
-// :
-// 23000
-// quantity
-// :
-// 1
-// rating
-// :
-// 0
-// review
-// :
-// []
-// sold
-// :
-// 0
-// updatedAt
-// :
-// "2025-04-01T19:27:12.626Z"
-// __v
-// :
-// 0
-// Product_id:"67ec3e1035a632109ae2644d"

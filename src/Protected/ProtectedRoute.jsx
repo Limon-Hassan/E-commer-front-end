@@ -31,7 +31,7 @@ const ProtectedRoute = () => {
     checkAuth();
   }, []);
 
-  return isvaild ? <Outlet /> : <div>fuck</div>;
+  return isvaild ? <Outlet /> : <div>Wait....</div>;
 };
 
 export default ProtectedRoute;

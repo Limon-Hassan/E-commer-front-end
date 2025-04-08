@@ -13,5 +13,23 @@ module.exports = withMT({
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar'),
+    function ({ addUtilities }) {
+      addUtilities({
+        '.scrollbar-thick::-webkit-scrollbar': {
+          width: '12px',
+          height: '12px',
+        },
+        '.scrollbar-thick::-webkit-scrollbar-thumb': {
+          backgroundColor: '#f00',
+          borderRadius: '8px',
+        },
+        '.scrollbar-thick::-webkit-scrollbar-track': {
+          backgroundColor: '#e5e5e5',
+          borderRadius:'8px'
+        },
+      });
+    },
+  ],
 });
