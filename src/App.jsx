@@ -7,6 +7,7 @@ import Otp from './Pages/otpsent';
 import Product from './Pages/Product';
 import Cart from './Pages/Cart';
 import CheckOut from './Pages/CheckOut';
+import OrderStatus from './Pages/orderStatus';
 import Account from './Pages/Account';
 import ProductDetails from './Pages/ProductDetails';
 import Signup from './Pages/Signup';
@@ -14,6 +15,7 @@ import Signin from './Pages/Signin';
 import ProtectedRoute from './Protected/ProtectedRoute';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Myorder from './Pages/Myorder';
 const App = () => {
   return (
     <>
@@ -27,6 +29,8 @@ const App = () => {
           <Route element={<ProtectedRoute />}>
             <Route path="/checkout" element={<CheckOut />} />
             <Route path="/account" element={<Account />} />
+            <Route path="/OrderStatus" element={<OrderStatus />} />
+            <Route path="/My-Order" element={<Myorder />} />
             <Route path="/cart" element={<Cart />} />
           </Route>
 

@@ -3,8 +3,9 @@ import Container from '../Container/Container';
 import Checkbox from './Checkbox';
 import { useState } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 const CheckOut = () => {
+  let [CheckoutSummary, setCheckoutSummary] = useState([]);
   let [cartItems, setCartItems] = useState([]);
   let [totalSummery, setTotalSummery] = useState({});
   const [selectedPayment, setSelectedPayment] = useState(null);
@@ -12,14 +13,14 @@ const CheckOut = () => {
   const userId = localStorage.getItem('userId');
   const [formData, setFormData] = useState({
     fullName: '',
-    street: '',
+    address: '',
     apartment: '',
     city: '',
     phone: '',
     email: '',
   });
-  const handlePaymentChange = option => {
-    setSelectedPayment(option);
+  const handlePaymentChange = paymentMethod => {
+    setSelectedPayment(paymentMethod);
   };
 
   useEffect(() => {
@@ -53,14 +54,31 @@ const CheckOut = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    console.log('Form Submitted ✅');
-    console.log(formData);
-    console.log('Save Info:', saveInfo);
-    console.log('Selected Payment Method:', selectedPayment);
 
-    // You can now send `formData` to your backend here
+    try {
+      const userid = localStorage.getItem('userId');
+
+      const checkoutData = {
+        name: formData.fullName,
+        address: formData.address,
+        Apartment: formData.apartment,
+        city: formData.city,
+        phone: formData.phone,
+        email: formData.email,
+        paymentMethod: selectedPayment,
+      };
+      const response = await axios.post(
+        `http://localhost:5990/api/v1/checkout/checkOut/${userid}`,
+        checkoutData
+      );
+      if (response.status === 200) {
+      }
+    } catch (error) {
+      console.error('Error during checkout process:', error);
+      toast.error(error.response?.data?.msg || 'An error occurred');
+    }
   };
 
   return (
@@ -103,9 +121,9 @@ const CheckOut = () => {
 
                   <input
                     type="text"
-                    name="street"
+                    name="address"
                     id="name"
-                    value={formData.street}
+                    value={formData.address}
                     onChange={handleChange}
                     required
                     placeholder="Street Address"
@@ -127,7 +145,6 @@ const CheckOut = () => {
                     id="name"
                     value={formData.apartment}
                     onChange={handleChange}
-                    required
                     placeholder="Apartment, floor, etc. (optional)"
                     className="border-border border rounded-md outline-none px-4 text-[15px] font-Poppipns_FONT font-normal text-black/50  w-full mt-1 py-3 focus:border-primary transition-colors duration-300 bg-[#F5F5F5]"
                   />
@@ -230,23 +247,15 @@ const CheckOut = () => {
                     Subtotal:
                   </h3>
                   <span className="text-[16px] font-Poppipns_FONT font-normal leading-6 text-[#000]">
-                    ${totalSummery.totalPrice}
+                    ${totalSummery.subTotal}
                   </span>
-                </div>
-                <div className="flex justify-between items-center border-b border-black/20 mb-[16px]">
-                  <h3 className="text-[16px] font-Poppipns_FONT font-normal leading-6 text-[#000] mb-[16px] mt-[20px]">
-                    Shipping:
-                  </h3>
-                  <span className="text-[16px] font-Poppipns_FONT font-normal leading-6 text-[#000]">
-                    Free
-                  </span>
-                </div>
-                <div className="flex justify-between items-center mb-[16px]">
+                </div>        
+                <div className="flex justify-between items-center mb-[16px] mt-4">
                   <h3 className="text-[16px] font-Poppipns_FONT font-normal leading-6 text-[#000] ">
                     Total:
                   </h3>
                   <span className="text-[16px] font-Poppipns_FONT font-normal leading-6 text-[#000]">
-                    $3000
+                    ${totalSummery.totalPrice}
                   </span>
                 </div>
                 <div className="flex items-center justify-between mb-[16px]">
@@ -285,14 +294,13 @@ const CheckOut = () => {
                   <Checkbox
                     label="Cash on Delivery"
                     ClassName="rounded-full"
-                    checked={selectedPayment === 'cod'}
-                    onChange={() => handlePaymentChange('cod')}
+                    checked={selectedPayment === 'cash on delivery'}
+                    onChange={() => handlePaymentChange('cash on delivery')}
                   />
                 </div>
                 <div className="flex items-center gap-5 w-[527px] mb-[48px]">
                   <input
                     onChange={handleChange}
-                    required
                     className="w-[260px] h-[56px] rounded px-[24px] bg-transparent border border-black text-[#000]/50 text-[16px] font-Poppipns_FONT font-normal placeholder:text-[16px] placeholder:font-Poppipns_FONT outline-none  "
                     placeholder="Coupon Code"
                     type="text"
@@ -304,6 +312,7 @@ const CheckOut = () => {
                 <button className="text-[18px] font-Poppipns_FONT font-medium text-[#FFF] leading-6 py-[16px] px-[48px] bg-[#DB4444] rounded ">
                   Order
                 </button>
+                <ToastContainer />
               </div>
             </div>
           </form>

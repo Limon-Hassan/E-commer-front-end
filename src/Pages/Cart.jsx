@@ -27,6 +27,7 @@ const Cart = () => {
           { withCredentials: true }
         );
         if (response.status === 200) {
+          console.log(response.data);
           setCartData(response.data.cartItems);
           setSummary(response.data.summary);
         }
@@ -76,6 +77,7 @@ const Cart = () => {
   };
   const handleRemove = async item => {
     let id = item._id;
+    console.log(item);
     try {
       const response = await axios.delete(
         `http://localhost:5990/api/v1/cart/DeleteCart/${id}`
@@ -109,14 +111,14 @@ const Cart = () => {
                 <div className="  flex-none scrollbar-thick overflow-y-scroll h-[400px] mb-8 ">
                   {cartData.length > 0 ? (
                     cartData.map(item => (
-                      <div className="space-y-6 ">
+                      <div key={item._id} className="space-y-6 ">
                         <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6">
                           <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
                             <a href="#" className="shrink-0 md:order-1">
                               <img
                                 className="w-[150px] h-[130px] object-center"
-                                src={item.product[0]?.Photo?.[0]}
-                                alt={item.product[0]?.name}
+                                src={item.product[0].Photo[0]}
+                                alt={item.product[0].name}
                               />
                             </a>
 
@@ -189,7 +191,7 @@ const Cart = () => {
                               </div>
                               <div className="text-end md:order-4 md:w-32">
                                 <p className="text-base font-bold text-gray-900 dark:text-white">
-                                  {item.product?.[0]?.price || 'No price found'}
+                                  {item.product[0].price || 'No price found'}
                                 </p>
                               </div>
                             </div>
@@ -199,7 +201,7 @@ const Cart = () => {
                                 href="#"
                                 className="text-base font-Poppipns_FONT font-medium text-gray-900 hover:underline dark:text-white"
                               >
-                                {item.product?.[0]?.name || 'No name found'}
+                                {item.product[0].name || 'No name found'}
                               </a>
 
                               <div className="flex items-center gap-4">
@@ -302,19 +304,42 @@ const Cart = () => {
                             ${summary.originalPrice}
                           </dd>
                         </dl>
-
                         <dl className="flex items-center justify-between gap-4">
                           <dt className="text-base font-Poppipns_FONT  font-normal text-gray-500 dark:text-gray-400">
-                            Additional Fess
+                            Additional Fees
                           </dt>
                           <dd className="text-base font-Poppipns_FONT  font-medium text-gray-900 dark:text-white">
                             ${summary.additionalFees}
                           </dd>
                         </dl>
-                      </div>
 
+                        <dl className="flex items-center justify-between gap-4">
+                          <dt className="text-base font-Poppipns_FONT  font-normal text-gray-500 dark:text-gray-400">
+                            Shipping Cost
+                          </dt>
+                          <dd className="text-base font-Poppipns_FONT  font-medium text-gray-900 dark:text-white">
+                            ${summary.shippingCost}
+                          </dd>
+                        </dl>
+                      </div>
                       <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
-                        <dt className="text-base font-Poppipns_FONT  font-bold text-gray-900 dark:text-white">
+                        <dt className="text-base font-Poppipns_FONT  font-bold text-gray-600 dark:text-white">
+                          SubTotal
+                        </dt>
+                        <dd className="text-base font-Poppipns_FONT  font-medium text-gray-900 dark:text-white">
+                          ${summary.subTotal}
+                        </dd>
+                      </dl>
+                      <dl className="flex items-center justify-between gap-4">
+                        <dt className="text-base font-Poppipns_FONT  font-normal text-red-400 dark:text-gray-400">
+                          Discount
+                        </dt>
+                        <dd className="text-base font-Poppipns_FONT  font-medium text-red-500 dark:text-white">
+                          <span className="mr-2">(-)</span>${summary.discount}
+                        </dd>
+                      </dl>
+                      <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
+                        <dt className="text-[18px] mt-2 font-Poppipns_FONT  font-bold text-gray-900 dark:text-white">
                           Total
                         </dt>
                         <dd className="text-base font-Poppipns_FONT  font-bold text-gray-900 dark:text-white">
