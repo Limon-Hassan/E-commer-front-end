@@ -20,7 +20,9 @@ const ProtectedRoute = () => {
         const response = await axiosInstance
           .get('http://localhost:5990/api/v1/auth/user')
           .then(Response => {
-            if (Response.statusText === 'OK') setIsvaild(true);
+            if (Response.statusText === 'OK') {
+              setIsvaild(true);
+            } 
           });
       } catch (error) {
         console.log('error hoise :' + error);

@@ -4,8 +4,9 @@ import Checkbox from './Checkbox';
 import { useState } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 const CheckOut = () => {
-  let [CheckoutSummary, setCheckoutSummary] = useState([]);
+  let navigate = useNavigate();
   let [cartItems, setCartItems] = useState([]);
   let [totalSummery, setTotalSummery] = useState({});
   const [selectedPayment, setSelectedPayment] = useState(null);
@@ -22,7 +23,6 @@ const CheckOut = () => {
   const handlePaymentChange = paymentMethod => {
     setSelectedPayment(paymentMethod);
   };
-
   useEffect(() => {
     if (!userId || userId === 'null') {
       console.warn('User ID not found in localStorage');
@@ -32,13 +32,19 @@ const CheckOut = () => {
 
     const fetchCartData = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:5990/api/v1/cart/getCart/${userId}`,
+        const cartResponse = await axios.get(
+          `http://localhost:5990/api/v1/cart/getcartInfo/${userId}`,
           { withCredentials: true }
         );
-        if (response.status === 200) {
-          setCartItems(response.data.cartItems);
-          setTotalSummery(response.data.summary);
+
+        const summaryResponse = await axios.get(
+          `http://localhost:5990/api/v1/cart/getCartSummery/${userId}`,
+          { withCredentials: true }
+        );
+
+        if (cartResponse.status === 200 && summaryResponse.status === 200) {
+          setCartItems(cartResponse.data.cartItems);
+          setTotalSummery(summaryResponse.data.summary);
         }
       } catch (error) {
         console.log('Error fetching cart data', error);
@@ -73,7 +79,12 @@ const CheckOut = () => {
         `http://localhost:5990/api/v1/checkout/checkOut/${userid}`,
         checkoutData
       );
-      if (response.status === 200) {
+      if (response.status === 201) {
+        const orderId = response.data.order._id;
+        localStorage.setItem('orderId', orderId);
+        localStorage.removeItem('cart');
+        toast.success(response?.data?.msg || 'Sucessfully Order Placed');
+        navigate('/OrderStatus');
       }
     } catch (error) {
       console.error('Error during checkout process:', error);
@@ -226,15 +237,15 @@ const CheckOut = () => {
                         <div className="flex items-center gap-5 mb-[20px] mt-[16px]">
                           <img
                             className="w-[70px] h-[55px] object-center"
-                            src={item.product[0]?.Photo[0]}
-                            alt="image_1"
+                            src={item.product.Photo[0]}
+                            alt={item.product.name}
                           />
                           <span className="text-[16px] font-Poppipns_FONT font-normal leading-6 text-[#000]">
-                            {item.product[0]?.name}
+                            {item.product.name}
                           </span>
                         </div>
                         <span className="text-[16px] font-Poppipns_FONT font-normal leading-6 text-[#000]">
-                          ${item.product[0]?.price}
+                          ${item.product.price}
                         </span>
                       </div>
                     ))
@@ -249,7 +260,7 @@ const CheckOut = () => {
                   <span className="text-[16px] font-Poppipns_FONT font-normal leading-6 text-[#000]">
                     ${totalSummery.subTotal}
                   </span>
-                </div>        
+                </div>
                 <div className="flex justify-between items-center mb-[16px] mt-4">
                   <h3 className="text-[16px] font-Poppipns_FONT font-normal leading-6 text-[#000] ">
                     Total:

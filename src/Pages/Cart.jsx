@@ -22,14 +22,20 @@ const Cart = () => {
 
     const fetchCartData = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:5990/api/v1/cart/getCart/${userId}`,
+        const cartResponse = await axios.get(
+          `http://localhost:5990/api/v1/cart/getcartInfo/${userId}`,
           { withCredentials: true }
         );
-        if (response.status === 200) {
-          console.log(response.data);
-          setCartData(response.data.cartItems);
-          setSummary(response.data.summary);
+
+        const summaryResponse = await axios.get(
+          `http://localhost:5990/api/v1/cart/getCartSummery/${userId}`,
+          { withCredentials: true }
+        );
+
+        if (cartResponse.status === 200 && summaryResponse.status === 200) {
+          console.log(cartResponse.data.cartItems);
+          setCartData(cartResponse.data.cartItems);
+          setSummary(summaryResponse.data.summary);
         }
       } catch (error) {
         console.log('Error fetching cart data', error);
@@ -76,8 +82,7 @@ const Cart = () => {
     }
   };
   const handleRemove = async item => {
-    let id = item._id;
-    console.log(item);
+    let id = item.cartItemId;
     try {
       const response = await axios.delete(
         `http://localhost:5990/api/v1/cart/DeleteCart/${id}`
@@ -117,8 +122,8 @@ const Cart = () => {
                             <a href="#" className="shrink-0 md:order-1">
                               <img
                                 className="w-[150px] h-[130px] object-center"
-                                src={item.product[0].Photo[0]}
-                                alt={item.product[0].name}
+                                src={item.product.Photo[0]}
+                                alt={item.product.name}
                               />
                             </a>
 
@@ -130,7 +135,10 @@ const Cart = () => {
                                 <button
                                   type="button"
                                   onClick={() =>
-                                    handleQuantityChange(item._id, 'decrement')
+                                    handleQuantityChange(
+                                      item.cartItemId,
+                                      'decrement'
+                                    )
                                   }
                                   disabled={item.quantity && item.quantity <= 1}
                                   id="decrement-button"
@@ -165,7 +173,10 @@ const Cart = () => {
                                 <button
                                   type="button"
                                   onClick={() =>
-                                    handleQuantityChange(item._id, 'increment')
+                                    handleQuantityChange(
+                                      item.cartItemId,
+                                      'increment'
+                                    )
                                   }
                                   disabled={item.quantity >= item.product.stock}
                                   id="increment-button"
@@ -191,7 +202,7 @@ const Cart = () => {
                               </div>
                               <div className="text-end md:order-4 md:w-32">
                                 <p className="text-base font-bold text-gray-900 dark:text-white">
-                                  {item.product[0].price || 'No price found'}
+                                  {item.product.price || 'No price found'}
                                 </p>
                               </div>
                             </div>
@@ -201,7 +212,7 @@ const Cart = () => {
                                 href="#"
                                 className="text-base font-Poppipns_FONT font-medium text-gray-900 hover:underline dark:text-white"
                               >
-                                {item.product[0].name || 'No name found'}
+                                {item.product.name || 'No name found'}
                               </a>
 
                               <div className="flex items-center gap-4">
@@ -299,6 +310,7 @@ const Cart = () => {
                         <dl className="flex items-center justify-between gap-4">
                           <dt className="text-base font-Poppipns_FONT font-normal text-gray-500 dark:text-gray-400">
                             Original price
+                            <span className='ml-2'>total items ({summary.totalQuantity})</span>
                           </dt>
                           <dd className="text-base font-Poppipns_FONT  font-medium text-gray-900 dark:text-white">
                             ${summary.originalPrice}

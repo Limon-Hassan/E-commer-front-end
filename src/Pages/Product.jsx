@@ -67,7 +67,7 @@ const Product = () => {
 
         cart.push(newProduct);
         localStorage.setItem('cart', JSON.stringify(cart));
-
+        window.dispatchEvent(new Event('storage'));
         toast.success('Product added to cart!', {
           position: 'top-right',
           autoClose: 3000,
