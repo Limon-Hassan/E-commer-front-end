@@ -5,8 +5,8 @@ const Checkbox = ({ label, ClassName, checked, onChange }) => {
     <label className="flex items-center space-x-2 cursor-pointer select-none">
       <input
         type="checkbox"
-        checked={checked} // Controlled by parent
-        onChange={onChange} // Calls function from parent
+        checked={checked} 
+        onChange={onChange} 
         className="hidden"
       />
       <div

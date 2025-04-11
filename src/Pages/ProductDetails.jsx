@@ -230,7 +230,6 @@ const ProductDetails = () => {
             </div>
           )}
 
-          {/* Reviews and Comments Section */}
           <div className="mt-12">
             <div className="border-t-2 pt-4">
               <h3 className="text-xl font-semibold mb-4">Reviews</h3>
@@ -247,17 +246,10 @@ const ProductDetails = () => {
                       </h4>
                       <p className="text-gray-600">{item.comment}</p>
                     </div>
-                    {/* <div className="bg-[#F5F5F5] p-4 rounded-md mt-4">
-                      <h4 className="text-lg font-semibold">Jane Smith</h4>
-                      <p className="text-gray-600">
-                        Excellent quality, but the size is a bit large for my
-                        hands.
-                      </p>
-                    </div> */}
+                  
                   </div>
                 ))}
 
-              {/* Add a Review Form */}
               <h3 className="text-xl font-semibold mb-4 mt-[35px]">
                 Add Your Review
               </h3>
@@ -321,61 +313,10 @@ const ProductDetails = () => {
                   </button>
                 </div>
               </form>
-              {/* <form className="space-y-4">
-                <div className="flex items-center space-x-2">
-                  <span className="font-medium">Rating:</span>
-                  <div className="flex gap-1">
-                    <button
-                      className="text-yellow-400"
-                      aria-label="Rate 1 star"
-                    >
-                      ⭐
-                    </button>
-                    <button
-                      className="text-yellow-400"
-                      aria-label="Rate 2 stars"
-                    >
-                      ⭐
-                    </button>
-                    <button
-                      className="text-yellow-400"
-                      aria-label="Rate 3 stars"
-                    >
-                      ⭐
-                    </button>
-                    <button
-                      className="text-yellow-400"
-                      aria-label="Rate 4 stars"
-                    >
-                      ⭐
-                    </button>
-                    <button
-                      className="text-yellow-400"
-                      aria-label="Rate 5 stars"
-                    >
-                      ⭐
-                    </button>
-                  </div>
-                </div>
-
-                <textarea
-                  className="w-full p-3 rounded-md border border-gray-300"
-                  rows="4"
-                  placeholder="Write your review here..."
-                />
-                <div className="flex justify-end">
-                  <button
-                    type="submit"
-                    className="mt-4 bg-red-500 text-white px-6 py-2 rounded"
-                  >
-                    Submit Review
-                  </button>
-                </div>
-              </form> */}
+              
             </div>
           </div>
 
-          {/* Related Items Section */}
           <div className="mb-[40px] mt-[120px]">
             <div className="flex items-center space-x-2">
               <span className="w-[20px] h-[40px] bg-red-500 rounded-md"></span>

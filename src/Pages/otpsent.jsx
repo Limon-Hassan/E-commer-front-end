@@ -3,7 +3,7 @@ import { Input, Typography, Button } from '@material-tailwind/react';
 import Container from '../Container/Container';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux'; // Import useSelector to access Redux store
+import { useSelector } from 'react-redux'; 
 
 const OtpSent = () => {
   const user = useSelector(state => state.auth.user);
@@ -20,14 +20,13 @@ const OtpSent = () => {
         if (prev === 1) {
           clearInterval(countdown);
           setIsResendEnabled(true);
-          setIsExpired(true); // Mark OTP as expired
-          setOtp(Array(4).fill('')); // Clear OTP
+          setIsExpired(true);
+          setOtp(Array(4).fill(''));
         }
         return prev - 1;
       });
     }, 1000);
 
-    // Cleanup on unmount to avoid memory leaks
     return () => clearInterval(countdown);
   }, []);
 
@@ -63,7 +62,6 @@ const OtpSent = () => {
       );
 
       if (response.data === 'OTP verified successfully!') {
-        // alert('OTP Verified! Redirecting...');
         navigate('/sign-in');
       } else {
         alert('Invalid OTP, try again.');
@@ -78,9 +76,9 @@ const OtpSent = () => {
   const handleResendOtp = async () => {
     if (isExpired && !isResendEnabled) return;
 
-    setIsResendEnabled(false); // Disable the resend button
-    setTimer(60); // Reset the timer
-    setIsExpired(false); // Reset expired flag
+    setIsResendEnabled(false); 
+    setTimer(60); 
+    setIsExpired(false); 
 
     try {
       const response = await axios.post(
@@ -90,10 +88,8 @@ const OtpSent = () => {
         }
       );
 
-      // Check if the OTP reset was successful
       if (response.data === 'OTP reset successful') {
         alert('New OTP sent!');
-        // Do not navigate away, stay on the current OTP page
       } else {
         alert('Failed to resend OTP. Try again later.');
       }

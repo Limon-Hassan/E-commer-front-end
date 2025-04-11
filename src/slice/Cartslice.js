@@ -11,7 +11,6 @@ const cartSlice = createSlice({
       const exists = state.cartItems.find(item => item._id === product._id);
 
       if (!exists) {
-        // Add it to cart with default quantity 1
         state.cartItems.push({ ...product, quantity: 1 });
       }
     },

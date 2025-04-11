@@ -1,5 +1,4 @@
 import Container from '../../Container/Container';
-import Benner_4 from '../Benner_4/Benner_4';
 import TimerForsales from './TimerForsales';
 
 const Benner_3 = () => {

@@ -35,11 +35,10 @@ const orderStatus = () => {
           <p className="text-gray-500 mb-[60px]">
             Thank you. Your order has been Confirmed.
           </p>
-          {/* Progress Steps */}
           <div className="flex justify-between items-center mb-12 relative px-4">
             {['Cart', 'Delivery & Payment', 'Summary', 'Done'].map(
               (label, index) => {
-                const currentStep = 3; // ✅ Change this to control progress
+                const currentStep = 3; 
                 const isCompleted = index < currentStep;
                 const isCurrent = index === currentStep;
 
@@ -67,7 +66,6 @@ const orderStatus = () => {
                       {label}
                     </span>
 
-                    {/* Connecting line */}
                     {index !== 3 && (
                       <div className="absolute top-6 left-1/2 w-full h-1 -z-10">
                         <div
@@ -86,7 +84,6 @@ const orderStatus = () => {
               }
             )}
           </div>
-          {/* Product Info */}
           <div className="scrollbar-thick overflow-y-scroll h-[400px] mb-8">
             {orderInfo?.cartItems?.map((item, index) => (
               <div
@@ -111,7 +108,6 @@ const orderStatus = () => {
             ))}
           </div>
 
-          {/* Order Summary */}
           {orderInfo && (
             <div className="border rounded-md p-4 mb-6">
               <h4 className="font-semibold text-lg mb-4">Order Summary</h4>
@@ -135,7 +131,6 @@ const orderStatus = () => {
               </div>
             </div>
           )}
-          {/* Customer Details */}
           <div className="grid md:grid-cols-4 gap-4">
             <div className="border rounded-md p-4">
               <h4 className="font-semibold mb-2">Customer</h4>

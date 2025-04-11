@@ -4,7 +4,7 @@ import Slider from 'react-slick';
 import axios from 'axios';
 
 const Benner_2 = () => {
-  const [allCategoryis, setallCategoryis] = useState([]); // State to store the fetched categories
+  const [allCategoryis, setallCategoryis] = useState([]); 
   const sliderRef = useRef(null);
 
   const settings = {
@@ -16,12 +16,10 @@ const Benner_2 = () => {
     arrows: false,
   };
 
-  // Function to fetch categories
   const allcategories = () => {
     axios
       .get('http://localhost:5990/api/v1/category/getAllCategories')
       .then(response => {
-        // console.log(response.data.data); // Debugging: Check data structure
         setallCategoryis(response.data.data);
       })
       .catch(err => {
@@ -29,7 +27,6 @@ const Benner_2 = () => {
       });
   };
 
-  // Function to truncate description to 10 words
   const truncateDescription = description => {
     if (!description) return ''; // Handle missing description
 
@@ -47,7 +44,7 @@ const Benner_2 = () => {
     return description; // If no condition is met, return the original description
   };
   useEffect(() => {
-    allcategories(); // Call API when the component mounts
+    allcategories(); 
   }, []);
 
   return (
@@ -89,8 +86,8 @@ const Benner_2 = () => {
                 <div key={index}>
                   <div className="w-[230px] h-[230px]  p-[20px] flex justify-center items-center flex-col border border-[#000000]/30 rounded-lg bg-[#F5F5F5] cursor-pointer text-center">
                     <img
-                      src={item.Image} // Ensure 'Image' is the correct field name
-                      alt={item.name} // Image alt text using category name
+                      src={item.Image} 
+                      alt={item.name} 
                       className=" w-[80px] mb-[18px] "
                     />
                     <span className="text-[20px] font-Poppipns_FONT font-medium text-[#000] leading-6 ">
@@ -105,7 +102,7 @@ const Benner_2 = () => {
                 </div>
               ))
             ) : (
-              <p>Loading categories...</p> // Show message if data is still loading
+              <p>Loading categories...</p> 
             )}
           </Slider>
         </div>
