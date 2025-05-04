@@ -36,9 +36,13 @@ const ProductDetails = () => {
         quantity: 1,
       };
 
-      await axios.post('http://localhost:5990/api/v1/cart/addtocart', payload, {
-        withCredentials: true,
-      });
+      await axios.post(
+        'http://backend-e-commerce-theta.vercel.app/api/v1/cart/addtocart',
+        payload,
+        {
+          withCredentials: true,
+        }
+      );
 
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
@@ -95,7 +99,7 @@ const ProductDetails = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:5990/api/v1/products/add-review`,
+        `http://backend-e-commerce-theta.vercel.app/api/v1/products/add-review`,
         {
           user: userId,
           productId: product._id,
@@ -121,7 +125,7 @@ const ProductDetails = () => {
     let productId = product._id;
     try {
       const response = await axios.get(
-        `http://localhost:5990/api/v1/products/getReviews`,
+        `http://backend-e-commerce-theta.vercel.app/api/v1/products/getReviews`,
         {
           params: { productId },
         }

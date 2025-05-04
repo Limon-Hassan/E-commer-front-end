@@ -33,12 +33,12 @@ const CheckOut = () => {
     const fetchCartData = async () => {
       try {
         const cartResponse = await axios.get(
-          `http://localhost:5990/api/v1/cart/getcartInfo/${userId}`,
+          `http://backend-e-commerce-theta.vercel.app/api/v1/cart/getcartInfo/${userId}`,
           { withCredentials: true }
         );
 
         const summaryResponse = await axios.get(
-          `http://localhost:5990/api/v1/cart/getCartSummery/${userId}`,
+          `http://backend-e-commerce-theta.vercel.app/api/v1/cart/getCartSummery/${userId}`,
           { withCredentials: true }
         );
 
@@ -76,7 +76,7 @@ const CheckOut = () => {
         paymentMethod: selectedPayment,
       };
       const response = await axios.post(
-        `http://localhost:5990/api/v1/checkout/checkOut/${userid}`,
+        `http://backend-e-commerce-theta.vercel.app/api/v1/checkout/checkOut/${userid}`,
         checkoutData
       );
       if (response.status === 201) {

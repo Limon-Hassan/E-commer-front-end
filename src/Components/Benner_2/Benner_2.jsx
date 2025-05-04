@@ -18,7 +18,9 @@ const Benner_2 = () => {
 
   const allcategories = () => {
     axios
-      .get('http://localhost:5990/api/v1/category/getAllCategories')
+      .get(
+        'http://backend-e-commerce-theta.vercel.app/api/v1/category/getAllCategories'
+      )
       .then(response => {
         setallCategoryis(response.data.data);
       })
@@ -28,20 +30,18 @@ const Benner_2 = () => {
   };
 
   const truncateDescription = description => {
-    if (!description) return ''; // Handle missing description
+    if (!description) return ''; 
 
-    // Truncate based on word count
     const words = description.split(' ');
     if (words.length > 3) {
-      return words.slice(0, 5).join(' ') + '...'; // Truncate to 10 words and add "..."
+      return words.slice(0, 5).join(' ') + '...'; 
     }
 
-    // Truncate based on character count
     if (description.length > 100) {
-      return description.slice(0, 100) + '...'; // Truncate to 100 characters and add "..."
+      return description.slice(0, 100) + '...'; 
     }
 
-    return description; // If no condition is met, return the original description
+    return description; 
   };
   useEffect(() => {
     allcategories(); 

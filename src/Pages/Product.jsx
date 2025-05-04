@@ -11,7 +11,9 @@ const Product = () => {
 
   const getproductsis = () => {
     axios
-      .get('http://localhost:5990/api/v1/products/getProducts')
+      .get(
+        'http://backend-e-commerce-theta.vercel.app/api/v1/products/getProducts'
+      )
       .then(response => {
         setIsproducts(response.data.data);
       })
@@ -38,9 +40,13 @@ const Product = () => {
         quantity: 1,
       };
 
-      await axios.post('http://localhost:5990/api/v1/cart/addtocart', payload, {
-        withCredentials: true,
-      });
+      await axios.post(
+        'http://backend-e-commerce-theta.vercel.app/api/v1/cart/addtocart',
+        payload,
+        {
+          withCredentials: true,
+        }
+      );
 
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
 

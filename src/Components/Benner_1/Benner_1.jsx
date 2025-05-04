@@ -7,7 +7,9 @@ const Benner_1 = () => {
   let [fewProducts, setProducts] = useState([]);
   let getfewProduct = () => {
     axios
-      .get('http://localhost:5990/api/v1/products/getProducts')
+      .get(
+        'http://backend-e-commerce-theta.vercel.app/api/v1/products/getProducts'
+      )
       .then(Response => {
         setProducts(Response.data.data);
       })
