@@ -4,7 +4,7 @@ import Slider from 'react-slick';
 import axios from 'axios';
 
 const Benner_2 = () => {
-  const [allCategoryis, setallCategoryis] = useState([]); 
+  const [allCategoryis, setallCategoryis] = useState([]);
   const sliderRef = useRef(null);
 
   const settings = {
@@ -19,7 +19,7 @@ const Benner_2 = () => {
   const allcategories = () => {
     axios
       .get(
-        'http://backend-e-commerce-theta.vercel.app/api/v1/category/getAllCategories'
+        'https://backend-e-commerce-theta.vercel.app/api/v1/category/getAllCategories'
       )
       .then(response => {
         setallCategoryis(response.data.data);
@@ -30,21 +30,21 @@ const Benner_2 = () => {
   };
 
   const truncateDescription = description => {
-    if (!description) return ''; 
+    if (!description) return '';
 
     const words = description.split(' ');
     if (words.length > 3) {
-      return words.slice(0, 5).join(' ') + '...'; 
+      return words.slice(0, 5).join(' ') + '...';
     }
 
     if (description.length > 100) {
-      return description.slice(0, 100) + '...'; 
+      return description.slice(0, 100) + '...';
     }
 
-    return description; 
+    return description;
   };
   useEffect(() => {
-    allcategories(); 
+    allcategories();
   }, []);
 
   return (
@@ -86,8 +86,8 @@ const Benner_2 = () => {
                 <div key={index}>
                   <div className="w-[230px] h-[230px]  p-[20px] flex justify-center items-center flex-col border border-[#000000]/30 rounded-lg bg-[#F5F5F5] cursor-pointer text-center">
                     <img
-                      src={item.Image} 
-                      alt={item.name} 
+                      src={item.Image}
+                      alt={item.name}
                       className=" w-[80px] mb-[18px] "
                     />
                     <span className="text-[20px] font-Poppipns_FONT font-medium text-[#000] leading-6 ">
@@ -102,7 +102,7 @@ const Benner_2 = () => {
                 </div>
               ))
             ) : (
-              <p>Loading categories...</p> 
+              <p>Loading categories...</p>
             )}
           </Slider>
         </div>

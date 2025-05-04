@@ -8,7 +8,7 @@ const Benner_1 = () => {
   let getfewProduct = () => {
     axios
       .get(
-        'http://backend-e-commerce-theta.vercel.app/api/v1/products/getProducts'
+        'https://backend-e-commerce-theta.vercel.app/api/v1/products/getProducts'
       )
       .then(Response => {
         setProducts(Response.data.data);
@@ -21,7 +21,7 @@ const Benner_1 = () => {
     getfewProduct();
   }, []);
   const truncateDescription = description => {
-    if (!description) return ''; 
+    if (!description) return '';
 
     const words = description.split(' ');
     if (words.length > 3) {
@@ -130,4 +130,3 @@ const Benner_1 = () => {
 };
 
 export default Benner_1;
-

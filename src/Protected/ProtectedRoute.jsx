@@ -3,7 +3,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://backend-e-commerce-theta.vercel.app',
+  baseURL: 'https://backend-e-commerce-theta.vercel.app',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -18,8 +18,9 @@ const ProtectedRoute = () => {
     const checkAuth = async () => {
       try {
         const response = await axiosInstance
-          .get('http://backend-e-commerce-theta.vercel.app/api/v1/auth/user')
+          .get('https://backend-e-commerce-theta.vercel.app/api/v1/auth/user')
           .then(Response => {
+            console.log(response);
             if (Response.statusText === 'OK') {
               setIsvaild(true);
             }

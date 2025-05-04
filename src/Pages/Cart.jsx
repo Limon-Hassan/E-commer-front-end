@@ -23,12 +23,12 @@ const Cart = () => {
     const fetchCartData = async () => {
       try {
         const cartResponse = await axios.get(
-          `http://backend-e-commerce-theta.vercel.app/api/v1/cart/getcartInfo/${userId}`,
+          `https://backend-e-commerce-theta.vercel.app/api/v1/cart/getcartInfo/${userId}`,
           { withCredentials: true }
         );
 
         const summaryResponse = await axios.get(
-          `http://backend-e-commerce-theta.vercel.app/api/v1/cart/getCartSummery/${userId}`,
+          `https://backend-e-commerce-theta.vercel.app/api/v1/cart/getCartSummery/${userId}`,
           { withCredentials: true }
         );
 
@@ -50,7 +50,7 @@ const Cart = () => {
     let id = cartId;
     try {
       const response = await axios.put(
-        `http://backend-e-commerce-theta.vercel.app/api/v1/cart/IncrementCart/${id}`,
+        `https://backend-e-commerce-theta.vercel.app/api/v1/cart/IncrementCart/${id}`,
         null,
         {
           params: { action },
@@ -85,7 +85,7 @@ const Cart = () => {
     let id = item.cartItemId;
     try {
       const response = await axios.delete(
-        `http://backend-e-commerce-theta.vercel.app/api/v1/cart/DeleteCart/${id}`
+        `https://backend-e-commerce-theta.vercel.app/api/v1/cart/DeleteCart/${id}`
       );
 
       localStorage.removeItem('cart');

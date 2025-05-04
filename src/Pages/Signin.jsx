@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '../action/authAction';
 import Container from '../Container/Container';
 const axiosInstance = axios.create({
-  baseURL: 'http://backend-e-commerce-theta.vercel.app',
+  baseURL: 'https://backend-e-commerce-theta.vercel.app',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -48,7 +48,7 @@ const Signin = () => {
 
     try {
       const response = await axiosInstance.post(
-        'http://backend-e-commerce-theta.vercel.app/api/v1/auth/login',
+        'https://backend-e-commerce-theta.vercel.app/api/v1/auth/login',
         loginInputs
       );
       localStorage.setItem('userId', response.data.user._id);
