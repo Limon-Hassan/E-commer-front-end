@@ -15,6 +15,7 @@ const Product = () => {
         'https://backend-e-commerce-theta.vercel.app/api/v1/products/getProducts'
       )
       .then(response => {
+        console.log(response);
         setIsproducts(response.data.data);
       })
       .catch(err => {
