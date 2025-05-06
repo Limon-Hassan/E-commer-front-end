@@ -17,15 +17,10 @@ const ProtectedRoute = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await axiosInstance
-          .get('/api/v1/auth/user')
-          .then(Response => {
-            console.log(Response);
-            if (Response.status === '200') {
-              console.log(Response.status);
-              setIsvaild(true);
-            }
-          });
+        const response = await axiosInstance.get('/api/v1/auth/user');
+        if (response.status === 200) {
+          setIsvaild(true);
+        }
       } catch (error) {
         console.log('error hoise :' + error);
         localStorage.removeItem('userId');
@@ -33,7 +28,7 @@ const ProtectedRoute = () => {
       }
     };
     checkAuth();
-  }, []);
+  }, [navigate]);
 
   return isvaild ? <Outlet /> : <div>Wait....</div>;
 };
