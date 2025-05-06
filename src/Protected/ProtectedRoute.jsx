@@ -18,8 +18,9 @@ const ProtectedRoute = () => {
     const checkAuth = async () => {
       try {
         const response = await axiosInstance
-          .get('https://backend-e-commerce-three.vercel.app/api/v1/auth/user')
+          .get('/api/v1/auth/user')
           .then(Response => {
+            console.log(Response);
             if (Response.statusText === 'OK') {
               setIsvaild(true);
             }
