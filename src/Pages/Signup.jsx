@@ -31,7 +31,6 @@ const Signup = () => {
         'https://backend-e-commerce-three.vercel.app/api/v1/auth/regisation',
         formData
       );
-      console.log(response);
       localStorage.setItem('authuser', JSON.stringify(response.data.user));
       dispatch(setUser(response.data.user));
 

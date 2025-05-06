@@ -20,7 +20,6 @@ const ProtectedRoute = () => {
         const response = await axiosInstance
           .get('https://backend-e-commerce-three.vercel.app/api/v1/auth/user')
           .then(Response => {
-            console.log(response);
             if (Response.statusText === 'OK') {
               setIsvaild(true);
             }
