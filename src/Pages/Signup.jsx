@@ -38,7 +38,7 @@ const Signup = () => {
       navigate('/otpsent');
     } catch (err) {
       console.error('Full error:', err);
-      setError(err.response?.data?.message || 'Something went wrong');
+      setError(err.response?.data?.message || 'Email Already Exists');
     } finally {
       setLoading(false);
     }
