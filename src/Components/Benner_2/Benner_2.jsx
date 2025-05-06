@@ -19,13 +19,14 @@ const Benner_2 = () => {
   const allcategories = () => {
     axios
       .get(
-        'https://backend-e-commerce-theta.vercel.app/api/v1/category/getAllCategories'
+        'https://backend-e-commerce-three.vercel.app/api/v1/category/getAllCategories'
       )
       .then(response => {
+        console.log(response);
         setallCategoryis(response.data.data);
       })
       .catch(err => {
-        console.log(err);
+        console.log(err.message);
       });
   };
 

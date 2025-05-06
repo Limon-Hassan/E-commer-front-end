@@ -28,7 +28,7 @@ const Signup = () => {
 
     try {
       const response = await axios.post(
-        'https://backend-e-commerce-theta.vercel.app/api/v1/auth/regisation',
+        'https://backend-e-commerce-three.vercel.app/api/v1/auth/regisation',
         formData
       );
       localStorage.setItem('authuser', JSON.stringify(response.data.user));

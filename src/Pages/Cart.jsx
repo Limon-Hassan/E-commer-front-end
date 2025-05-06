@@ -23,17 +23,16 @@ const Cart = () => {
     const fetchCartData = async () => {
       try {
         const cartResponse = await axios.get(
-          `https://backend-e-commerce-theta.vercel.app/api/v1/cart/getcartInfo/${userId}`,
+          `https://backend-e-commerce-three.vercel.app/api/v1/cart/getcartInfo/${userId}`,
           { withCredentials: true }
         );
 
         const summaryResponse = await axios.get(
-          `https://backend-e-commerce-theta.vercel.app/api/v1/cart/getCartSummery/${userId}`,
+          `https://backend-e-commerce-three.vercel.app/api/v1/cart/getCartSummery/${userId}`,
           { withCredentials: true }
         );
 
         if (cartResponse.status === 200 && summaryResponse.status === 200) {
-          console.log(cartResponse.data.cartItems);
           setCartData(cartResponse.data.cartItems);
           setSummary(summaryResponse.data.summary);
         }
@@ -50,7 +49,7 @@ const Cart = () => {
     let id = cartId;
     try {
       const response = await axios.put(
-        `https://backend-e-commerce-theta.vercel.app/api/v1/cart/IncrementCart/${id}`,
+        `https://backend-e-commerce-three.vercel.app/api/v1/cart/IncrementCart/${id}`,
         null,
         {
           params: { action },
@@ -85,7 +84,7 @@ const Cart = () => {
     let id = item.cartItemId;
     try {
       const response = await axios.delete(
-        `https://backend-e-commerce-theta.vercel.app/api/v1/cart/DeleteCart/${id}`
+        `https://backend-e-commerce-three.vercel.app/api/v1/cart/DeleteCart/${id}`
       );
 
       localStorage.removeItem('cart');

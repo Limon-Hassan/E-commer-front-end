@@ -8,7 +8,7 @@ const Benner_1 = () => {
   let getfewProduct = () => {
     axios
       .get(
-        'https://backend-e-commerce-theta.vercel.app/api/v1/products/getProducts'
+        'https://backend-e-commerce-three.vercel.app/api/v1/products/getProducts'
       )
       .then(Response => {
         setProducts(Response.data.data);

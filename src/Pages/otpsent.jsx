@@ -57,7 +57,7 @@ const OtpSent = () => {
 
     try {
       const response = await axios.post(
-        'https://backend-e-commerce-theta.vercel.app/api/v1/auth/otp-verify',
+        'https://backend-e-commerce-three.vercel.app/api/v1/auth/otp-verify',
         { email: user.email, otp: otpCode }
       );
 
@@ -82,7 +82,7 @@ const OtpSent = () => {
 
     try {
       const response = await axios.post(
-        'https://backend-e-commerce-theta.vercel.app/api/v1/auth/otp-reset',
+        'https://backend-e-commerce-three.vercel.app/api/v1/auth/otp-reset',
         {
           email: user.email,
         }

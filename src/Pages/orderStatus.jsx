@@ -10,7 +10,7 @@ const orderStatus = () => {
     let orderstauts = async () => {
       try {
         let response = await axios.get(
-          `https://backend-e-commerce-theta.vercel.app/api/v1/checkout/getCheckout`,
+          `https://backend-e-commerce-three.vercel.app/api/v1/checkout/getCheckout`,
           { params: { orderId } }
         );
         if (response.status === 200) {

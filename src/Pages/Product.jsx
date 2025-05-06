@@ -12,7 +12,7 @@ const Product = () => {
   const getproductsis = () => {
     axios
       .get(
-        'https://backend-e-commerce-theta.vercel.app/api/v1/products/getProducts'
+        'https://backend-e-commerce-three.vercel.app/api/v1/products/getProducts'
       )
       .then(response => {
         console.log(response);
@@ -42,7 +42,7 @@ const Product = () => {
       };
 
       await axios.post(
-        'https://backend-e-commerce-theta.vercel.app/api/v1/cart/addtocart',
+        'https://backend-e-commerce-three.vercel.app/api/v1/cart/addtocart',
         payload,
         {
           withCredentials: true,
@@ -102,7 +102,7 @@ const Product = () => {
     try {
       await axios
         .get(
-          'https://backend-e-commerce-theta.vercel.app/api/v1/products/getProducts',
+          'https://backend-e-commerce-three.vercel.app/api/v1/products/getProducts',
           {
             params: { id },
           }
