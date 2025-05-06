@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '../action/authAction';
 import Container from '../Container/Container';
 const axiosInstance = axios.create({
-  baseURL: 'https://backend-e-commerce-theta.vercel.app',
+  baseURL: 'https://backend-e-commerce-three.vercel.app',
   headers: {
     'Content-Type': 'application/json',
   },
