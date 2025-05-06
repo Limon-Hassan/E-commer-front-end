@@ -21,7 +21,7 @@ const ProtectedRoute = () => {
           .get('/api/v1/auth/user')
           .then(Response => {
             console.log(Response);
-            if (Response.statusText === 'OK') {
+            if (Response.status === '200') {
               setIsvaild(true);
             }
           });
