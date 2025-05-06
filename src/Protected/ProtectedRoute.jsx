@@ -22,6 +22,7 @@ const ProtectedRoute = () => {
           .then(Response => {
             console.log(Response);
             if (Response.status === '200') {
+              console.log(Response.status);
               setIsvaild(true);
             }
           });
